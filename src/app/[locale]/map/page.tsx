@@ -16,7 +16,7 @@ export default async function MapPage({ params }: Props) {
         <h1 className="font-display text-3xl font-semibold text-ink">{t("title")}</h1>
         <p className="mt-2 text-muted">{t("subtitle")}</p>
       </div>
-      <PlanetMap locale={locale} height={620} />
+      <PlanetMap locale={locale} height={680} />
     </div>
   );
 }

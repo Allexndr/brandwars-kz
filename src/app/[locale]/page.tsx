@@ -45,32 +45,31 @@ export default async function HomePage({ params }: Props) {
   }
 
   return (
-    <div className="space-y-16">
-      <section className="surface-card overflow-hidden p-0">
-        <div className="grid gap-0 lg:grid-cols-2">
-          <div className="flex flex-col justify-center p-8 md:p-12">
-            <p className="text-sm font-semibold uppercase tracking-wide text-accent">
-              {t("eyebrow")}
-            </p>
-            <h1 className="mt-3 font-display text-4xl font-semibold leading-tight text-ink md:text-5xl">
-              {t("heroTitle")}
-            </h1>
-            <p className="mt-4 max-w-md text-lg text-muted">{t("subtitle")}</p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/claim-brand" className="btn-primary text-center">
-                {t("ctaClaimFull")}
-              </Link>
-              <Link href="/map" className="btn-secondary text-center">
-                {t("ctaMap")}
-              </Link>
-            </div>
-            <p className="mt-4 text-xs text-muted">{t("legalNote")}</p>
-          </div>
-          <div className="min-h-[320px] border-t border-[var(--color-border)] lg:border-l lg:border-t-0">
-            <PlanetMap locale={locale} height={360} compact />
-          </div>
+    <div className="space-y-12">
+      <section>
+        <PlanetMap locale={locale} height={520} />
+      </section>
+
+      <section className="grid gap-8 lg:grid-cols-2 lg:items-end">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wide text-accent">
+            {t("eyebrow")}
+          </p>
+          <h1 className="mt-3 font-display text-4xl font-semibold leading-tight text-ink md:text-5xl">
+            {t("heroTitle")}
+          </h1>
+          <p className="mt-4 max-w-md text-lg text-muted">{t("subtitle")}</p>
+        </div>
+        <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
+          <Link href="/claim-brand" className="btn-primary text-center">
+            {t("ctaClaimFull")}
+          </Link>
+          <Link href="/map" className="btn-secondary text-center">
+            {t("ctaMap")}
+          </Link>
         </div>
       </section>
+      <p className="-mt-8 text-xs text-muted">{t("legalNote")}</p>
 
       <section className="grid gap-6 sm:grid-cols-2">
         <StatCard label={t("statsBrands")} value={brandCount} />
