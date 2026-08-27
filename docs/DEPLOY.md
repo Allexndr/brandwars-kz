@@ -1,6 +1,16 @@
 # Deployment Guide — BrandWars.kz
 
-## Vercel (recommended)
+## Vercel deploy (API token)
+
+For `vcp_` tokens (API-only, not CLI):
+
+```bash
+export VERCEL_TOKEN=your_token
+python3 scripts/deploy-vercel-api.py
+```
+
+Project: **brand-wars** on team `murdasoft-9183s-projects`  
+Production: https://brand-wars.vercel.app
 
 1. Import [Allexndr/brand_wars](https://github.com/Allexndr/brand_wars) on [vercel.com/new](https://vercel.com/new)
 2. Set **Framework**: Next.js, **Root**: `.`, **Build**: `prisma generate && next build`
