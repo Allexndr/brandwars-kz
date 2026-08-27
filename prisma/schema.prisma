@@ -1,0 +1,472 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  BRAND_OWNER
+  MODERATOR
+  ADMIN
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum ClaimStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  CHARGEBACK
+  DISPUTED
+}
+
+enum TransactionType {
+  BRAND_ENTRY
+  TOP_UP
+  SUPPORT
+  REFUND
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum ModerationStatus {
+  OPEN
+  APPROVED
+  REJECTED
+}
+
+enum SeasonStatus {
+  DRAFT
+  ACTIVE
+  ENDED
+}
+
+enum SeasonCategoryStatus {
+  ACTIVE
+  PAUSED
+}
+
+enum SupportActionType {
+  DAILY_ENERGY
+  PAID_BOOST
+}
+
+enum ReportReason {
+  FRAUD
+  INAPPROPRIATE
+  IMPERSONATION
+  OTHER
+}
+
+enum ReportStatus {
+  OPEN
+  REVIEWED
+  DISMISSED
+}
+
+enum WalletTransactionType {
+  CREDIT
+  DEBIT
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  accounts                 Account[]
+  sessions                 Session[]
+  profile                  UserProfile?
+  brandClaims              BrandClaim[]              @relation("ClaimSubmitter")
+  brandVerifications       BrandVerification[]       @relation("VerificationSubmitter")
+  reviewedVerifications    BrandVerification[]       @relation("VerificationReviewer")
+  transactions             Transaction[]
+  paymentOrders            PaymentOrder[]
+  wallet                   Wallet?
+  supportActions           CommunitySupportAction[]
+  moderationCasesReviewed  ModerationCase[]          @relation("ModerationReviewer")
+  reports                  Report[]
+  auditLogs                AuditLog[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model UserProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique @map("user_id")
+  locale    String   @default("ru")
+  city      String?
+  bio       String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  nameRu      String   @map("name_ru")
+  nameKk      String   @map("name_kk")
+  continentRu String   @map("continent_ru")
+  continentKk String   @map("continent_kk")
+  description String?
+  color       String   @default("#38bdf8")
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  brands            Brand[]
+  seasonCategories  SeasonCategory[]
+  events            Event[]
+
+  @@map("categories")
+}
+
+model Season {
+  id        String       @id @default(cuid())
+  slug      String       @unique
+  nameRu    String       @map("name_ru")
+  nameKk    String       @map("name_kk")
+  status    SeasonStatus @default(DRAFT)
+  startsAt  DateTime     @map("starts_at")
+  endsAt    DateTime     @map("ends_at")
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  seasonCategories SeasonCategory[]
+  events           Event[]
+
+  @@map("seasons")
+}
+
+model SeasonCategory {
+  id               String               @id @default(cuid())
+  seasonId         String               @map("season_id")
+  categoryId       String               @map("category_id")
+  entryMinimumKzt  Int                  @map("entry_minimum_kzt")
+  priceCoefficient Float                @map("price_coefficient")
+  mapConfig        Json?                @map("map_config")
+  status           SeasonCategoryStatus @default(ACTIVE)
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+
+  season       Season        @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  territories  Territory[]
+  transactions Transaction[]
+
+  @@unique([seasonId, categoryId])
+  @@map("season_categories")
+}
+
+model Brand {
+  id                 String             @id @default(cuid())
+  slug               String             @unique
+  name               String
+  normalizedName     String             @map("normalized_name")
+  description        String?
+  websiteUrl         String?            @map("website_url")
+  logoUrl            String?            @map("logo_url")
+  verificationStatus VerificationStatus @default(UNVERIFIED) @map("verification_status")
+  source             String             @default("claim")
+  primaryCategoryId  String             @map("primary_category_id")
+  ownerUserId        String?            @map("owner_user_id")
+  isActive           Boolean            @default(true) @map("is_active")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  primaryCategory Category              @relation(fields: [primaryCategoryId], references: [id])
+  claims          BrandClaim[]
+  verifications   BrandVerification[]
+  territories     Territory[]
+  transactions    Transaction[]
+  paymentOrders   PaymentOrder[]
+  supportActions  CommunitySupportAction[]
+  reports         Report[]
+  shareCards      ShareCard[]
+
+  @@map("brands")
+}
+
+model BrandClaim {
+  id              String      @id @default(cuid())
+  brandId         String?     @map("brand_id")
+  submittedById   String      @map("submitted_by_id")
+  websiteUrl      String      @map("website_url")
+  brandName       String      @map("brand_name")
+  categoryId      String      @map("category_id")
+  contactEmail    String      @map("contact_email")
+  bidAmountKzt    Int         @map("bid_amount_kzt")
+  status          ClaimStatus @default(PENDING)
+  metadata        Json?
+  notes           String?
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  brand       Brand?           @relation(fields: [brandId], references: [id])
+  submitter   User             @relation("ClaimSubmitter", fields: [submittedById], references: [id])
+  moderation  ModerationCase?
+
+  @@map("brand_claims")
+}
+
+model BrandVerification {
+  id            String             @id @default(cuid())
+  brandId       String             @map("brand_id")
+  method        String
+  status        VerificationStatus @default(PENDING)
+  submittedById String             @map("submitted_by_id")
+  reviewedById  String?            @map("reviewed_by_id")
+  submittedAt   DateTime           @default(now()) @map("submitted_at")
+  reviewedAt    DateTime?          @map("reviewed_at")
+  evidence      String?
+  notes         String?
+
+  brand      Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  submitter  User  @relation("VerificationSubmitter", fields: [submittedById], references: [id])
+  reviewer   User? @relation("VerificationReviewer", fields: [reviewedById], references: [id])
+
+  @@map("brand_verifications")
+}
+
+model Territory {
+  id               String   @id @default(cuid())
+  seasonCategoryId String   @map("season_category_id")
+  brandId          String   @map("brand_id")
+  battlePower      Float    @default(0) @map("battle_power")
+  territoryShare   Float    @default(0) @map("territory_share")
+  rank             Int      @default(0)
+  visualLevel      Int      @default(1) @map("visual_level")
+  capitalLevel     Int      @default(1) @map("capital_level")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  seasonCategory SeasonCategory @relation(fields: [seasonCategoryId], references: [id], onDelete: Cascade)
+  brand          Brand          @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@unique([seasonCategoryId, brandId])
+  @@map("territories")
+}
+
+model Transaction {
+  id               String            @id @default(cuid())
+  userId           String            @map("user_id")
+  brandId          String?           @map("brand_id")
+  seasonCategoryId String?           @map("season_category_id")
+  type             TransactionType
+  amountKzt        Int               @map("amount_kzt")
+  status           TransactionStatus @default(PENDING)
+  paymentProvider  String?           @map("payment_provider")
+  providerPaymentId String?          @map("provider_payment_id")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+
+  user           User            @relation(fields: [userId], references: [id])
+  brand          Brand?          @relation(fields: [brandId], references: [id])
+  seasonCategory SeasonCategory? @relation(fields: [seasonCategoryId], references: [id])
+
+  @@map("transactions")
+}
+
+model PaymentOrder {
+  id                String        @id @default(cuid())
+  userId            String        @map("user_id")
+  brandId           String?       @map("brand_id")
+  amountKzt         Int           @map("amount_kzt")
+  status            PaymentStatus @default(PENDING)
+  paymentProvider   String        @map("payment_provider")
+  providerOrderId   String?       @map("provider_order_id")
+  idempotencyKey    String        @unique @map("idempotency_key")
+  metadata          Json?
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  user  User   @relation(fields: [userId], references: [id])
+  brand Brand? @relation(fields: [brandId], references: [id])
+
+  @@map("payment_orders")
+}
+
+model Wallet {
+  id        String   @id @default(cuid())
+  userId    String   @unique @map("user_id")
+  balance   Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions WalletTransaction[]
+
+  @@map("wallets")
+}
+
+model WalletTransaction {
+  id          String                @id @default(cuid())
+  walletId    String                @map("wallet_id")
+  type        WalletTransactionType
+  amount      Int
+  description String?
+  createdAt   DateTime              @default(now()) @map("created_at")
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@map("wallet_transactions")
+}
+
+model CommunitySupportAction {
+  id        String            @id @default(cuid())
+  userId    String            @map("user_id")
+  brandId   String            @map("brand_id")
+  type      SupportActionType
+  power     Float             @default(1)
+  createdAt DateTime          @default(now()) @map("created_at")
+
+  user  User  @relation(fields: [userId], references: [id])
+  brand Brand @relation(fields: [brandId], references: [id])
+
+  @@map("community_support_actions")
+}
+
+model ModerationCase {
+  id           String           @id @default(cuid())
+  brandClaimId String           @unique @map("brand_claim_id")
+  status       ModerationStatus @default(OPEN)
+  reviewedById String?          @map("reviewed_by_id")
+  notes        String?
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+
+  brandClaim BrandClaim @relation(fields: [brandClaimId], references: [id], onDelete: Cascade)
+  reviewer   User?      @relation("ModerationReviewer", fields: [reviewedById], references: [id])
+
+  @@map("moderation_cases")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?  @map("user_id")
+  action    String
+  entity    String
+  entityId  String?  @map("entity_id")
+  metadata  Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
+
+model Report {
+  id          String       @id @default(cuid())
+  reporterId  String?      @map("reporter_id")
+  brandId     String?      @map("brand_id")
+  reason      ReportReason
+  description String?
+  status      ReportStatus @default(OPEN)
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  reporter User?  @relation(fields: [reporterId], references: [id])
+  brand    Brand? @relation(fields: [brandId], references: [id])
+
+  @@map("reports")
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  titleRu     String   @map("title_ru")
+  titleKk     String   @map("title_kk")
+  description String?
+  seasonId    String?  @map("season_id")
+  categoryId  String?  @map("category_id")
+  startsAt    DateTime @map("starts_at")
+  endsAt      DateTime @map("ends_at")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  season   Season?   @relation(fields: [seasonId], references: [id])
+  category Category? @relation(fields: [categoryId], references: [id])
+
+  @@map("events")
+}
+
+model ShareCard {
+  id        String   @id @default(cuid())
+  brandId   String   @map("brand_id")
+  imageUrl  String?  @map("image_url")
+  metadata  Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  brand Brand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  @@map("share_cards")
+}

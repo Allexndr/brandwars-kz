@@ -1,0 +1,77 @@
+{
+  "common": {
+    "brandName": "BrandWars.kz",
+    "tagline": "Қазақстан брендтерінің тірі планетасы",
+    "legalLeader": "BrandWars санат лидері",
+    "adLabel": "Жарнама",
+    "loading": "Жүктелуде...",
+    "submit": "Жіберу",
+    "cancel": "Бас тарту",
+    "save": "Сақтау",
+    "back": "Артқа",
+    "next": "Келесі",
+    "search": "Іздеу",
+    "learnMore": "Толығырақ"
+  },
+  "nav": {
+    "map": "Карта",
+    "brands": "Брендтер",
+    "claim": "Бренд қосу",
+    "dashboard": "Кабинет",
+    "admin": "Админ",
+    "login": "Кіру",
+    "logout": "Шығу",
+    "rules": "Ережелер",
+    "hallOfFame": "Даңқ залы"
+  },
+  "home": {
+    "title": "BrandWars.kz — брендтердің тірі планетасы",
+    "subtitle": "Ойын картасында аумақ пен назар үшін бәсеке. «Ең жақсы бренд» емес, BrandWars санат лидері.",
+    "ctaMap": "Картаны ашу",
+    "ctaClaim": "Бренд қосу",
+    "statsBrands": "Картадағы брендтер",
+    "statsCategories": "Материктер",
+    "statsSeason": "Ағымдағы маусым"
+  },
+  "map": {
+    "title": "BrandWars планетасы",
+    "subtitle": "Материкті — нарық санатын таңдаңыз",
+    "territory": "Аумақ",
+    "battlePower": "Қолдау күші"
+  },
+  "brands": {
+    "title": "Брендтер каталогы",
+    "verified": "Тексерілген",
+    "unverified": "Тексерілмеген",
+    "leader": "BrandWars санат лидері"
+  },
+  "claim": {
+    "title": "Қатысуға жылдам өтінім",
+    "step1": "Сайт сілтемесі",
+    "step2": "Алдын ала қарау",
+    "step3": "Бренд деректері",
+    "step4": "Ставка",
+    "step5": "Растау",
+    "urlPlaceholder": "https://example.kz",
+    "success": "Өтінім модерацияға жіберілді"
+  },
+  "dashboard": {
+    "title": "Бренд кабинеті",
+    "topUp": "Қолдау күшін толықтыру",
+    "amount": "Сома, ₸",
+    "position": "Санаттағы орын",
+    "territoryShare": "Аумақ үлесі"
+  },
+  "admin": {
+    "title": "Админ панелі",
+    "moderation": "Өтінімдер модерациясы",
+    "approve": "Мақұлдау",
+    "reject": "Қабылдамау"
+  },
+  "footer": {
+    "privacy": "Құпиялылық",
+    "terms": "Шарттар",
+    "report": "Шағымдану",
+    "disclaimer": "Рейтинг BrandWars ойын метрикасын көрсетеді, тауар немесе қызмет сапасын емес."
+  }
+}
