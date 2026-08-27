@@ -1,1 +1,1 @@
-export { CategoryMap, MapCanvas } from "./MapCanvas";
+export { CategoryMap } from "./MapCanvas";

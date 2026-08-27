@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { prisma } from "@/lib/prisma";
-import Image from "next/image";
+import { PlanetMap } from "@/components/PlanetMap";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,6 @@ export default async function HomePage({ params }: Props) {
 
   let brandCount = 0;
   let categoryCount = 6;
-  let seasonName = "—";
   let leaders: Array<{ name: string; slug: string; category: string }> = [];
 
   try {
@@ -24,10 +23,6 @@ export default async function HomePage({ params }: Props) {
       prisma.brand.count({ where: { isActive: true } }),
       prisma.category.count({ where: { isActive: true } }),
     ]);
-    const season = await prisma.season.findFirst({ where: { status: "ACTIVE" } });
-    if (season) {
-      seasonName = locale === "kk" ? season.nameKk : season.nameRu;
-    }
 
     const top = await prisma.territory.findMany({
       where: { rank: 1 },
@@ -51,9 +46,8 @@ export default async function HomePage({ params }: Props) {
 
   return (
     <div className="space-y-16">
-      {/* Hero — light surface, dark band accent, no purple gradient */}
       <section className="surface-card overflow-hidden p-0">
-        <div className="grid gap-0 md:grid-cols-2">
+        <div className="grid gap-0 lg:grid-cols-2">
           <div className="flex flex-col justify-center p-8 md:p-12">
             <p className="text-sm font-semibold uppercase tracking-wide text-accent">
               {t("eyebrow")}
@@ -72,40 +66,17 @@ export default async function HomePage({ params }: Props) {
             </div>
             <p className="mt-4 text-xs text-muted">{t("legalNote")}</p>
           </div>
-          <div className="section-band relative flex min-h-[280px] items-center justify-center p-8">
-            <div className="grid grid-cols-3 gap-3">
-              {["travel", "beauty", "code", "games", "marketing", "ai-agents"].map(
-                (slug) => (
-                  <div
-                    key={slug}
-                    className="flex flex-col items-center gap-2 rounded-brand bg-white/10 p-3"
-                  >
-                    <Image
-                      src={`/assets/ui/category-${slug}.png`}
-                      alt=""
-                      width={40}
-                      height={40}
-                      className="pixelated"
-                    />
-                  </div>
-                ),
-              )}
-            </div>
-            <p className="absolute bottom-4 left-0 right-0 text-center text-xs text-white/70">
-              6 материков · сезон {seasonName}
-            </p>
+          <div className="min-h-[320px] border-t border-[var(--color-border)] lg:border-l lg:border-t-0">
+            <PlanetMap locale={locale} height={360} compact />
           </div>
         </div>
       </section>
 
-      {/* Stats — whitespace separation, no gray borders everywhere */}
-      <section className="grid gap-6 sm:grid-cols-3">
+      <section className="grid gap-6 sm:grid-cols-2">
         <StatCard label={t("statsBrands")} value={brandCount} />
         <StatCard label={t("statsCategories")} value={categoryCount} />
-        <StatCard label={t("statsSeason")} value={seasonName} isText />
       </section>
 
-      {/* 3-step path to payment (book 37: TTV <60s) */}
       <section className="surface-card">
         <h2 className="font-display text-2xl font-semibold text-ink">{t("howTitle")}</h2>
         <ol className="mt-8 grid gap-8 md:grid-cols-3">
@@ -152,23 +123,11 @@ export default async function HomePage({ params }: Props) {
   );
 }
 
-function StatCard({
-  label,
-  value,
-  isText,
-}: {
-  label: string;
-  value: number | string;
-  isText?: boolean;
-}) {
+function StatCard({ label, value }: { label: string; value: number | string }) {
   return (
     <div className="surface-card text-center">
       <p className="text-sm font-medium text-muted">{label}</p>
-      <p
-        className={`mt-2 font-display font-semibold text-primary ${isText ? "text-xl" : "text-4xl"}`}
-      >
-        {value}
-      </p>
+      <p className="mt-2 font-display text-4xl font-semibold text-primary">{value}</p>
     </div>
   );
 }

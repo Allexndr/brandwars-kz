@@ -1,9 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const full = req.nextUrl.searchParams.get("full") === "1";
+
   const activeSeason = await prisma.season.findFirst({
     where: { status: "ACTIVE" },
   });
@@ -17,10 +19,11 @@ export async function GET() {
     categoryId: string;
     _count: { territories: number };
     territories: Array<{
+      id: string;
       rank: number;
       territoryShare: number;
       battlePower: number;
-      brand: { slug: string; name: string };
+      brand: { slug: string; name: string; websiteUrl: string | null };
     }>;
   }> = [];
 
@@ -31,7 +34,7 @@ export async function GET() {
         territories: {
           include: { brand: true },
           orderBy: { rank: "asc" },
-          take: 3,
+          take: full ? 40 : 3,
         },
         _count: { select: { territories: true } },
       },
@@ -44,6 +47,17 @@ export async function GET() {
 
   const mapData = categories.map((cat) => {
     const sc = scByCategory[cat.id];
+    const territories = (sc?.territories ?? []).map((t) => ({
+      id: t.id,
+      slug: t.brand.slug,
+      name: t.brand.name,
+      rank: t.rank,
+      territoryShare: t.territoryShare,
+      battlePower: t.battlePower,
+      color: cat.color,
+      websiteUrl: t.brand.websiteUrl,
+    }));
+
     return {
       slug: cat.slug,
       nameRu: cat.nameRu,
@@ -52,18 +66,18 @@ export async function GET() {
       continentKk: cat.continentKk,
       color: cat.color,
       brandCount: sc?._count.territories ?? 0,
-      leaders: (sc?.territories ?? []).map((t) => ({
-        slug: t.brand.slug,
-        name: t.brand.name,
+      leaders: territories.slice(0, 3).map((t) => ({
+        slug: t.slug,
+        name: t.name,
         rank: t.rank,
         territoryShare: t.territoryShare,
         battlePower: t.battlePower,
       })),
+      ...(full ? { territories } : {}),
     };
   });
 
   return NextResponse.json({
-    season: activeSeason,
     categories: mapData,
   });
 }
