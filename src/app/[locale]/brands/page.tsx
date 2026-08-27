@@ -57,15 +57,10 @@ export default async function BrandsPage({ params, searchParams }: Props) {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">{t("title")}</h1>
+      <h1 className="font-display text-3xl font-semibold text-ink">{t("title")}</h1>
       <form className="flex gap-2">
-        <input
-          name="q"
-          defaultValue={q}
-          placeholder="Поиск..."
-          className="flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
-        />
-        <button type="submit" className="rounded bg-sky-600 px-4 py-2 text-sm">
+        <input name="q" defaultValue={q} placeholder="Поиск..." className="input-field flex-1" />
+        <button type="submit" className="btn-primary px-6">
           OK
         </button>
       </form>
@@ -75,7 +70,7 @@ export default async function BrandsPage({ params, searchParams }: Props) {
         ))}
       </div>
       {brands.length === 0 && (
-        <p className="text-center text-slate-400">Бренды не найдены</p>
+        <p className="text-center text-muted">Бренды не найдены</p>
       )}
     </div>
   );

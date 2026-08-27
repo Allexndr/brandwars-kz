@@ -37,39 +37,31 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
-      <h1 className="text-3xl font-bold">{t("title")}</h1>
-      <p className="text-slate-400">
-        {session?.user?.email ?? session?.user?.name ?? "Пользователь"}
-      </p>
+      <h1 className="font-display text-3xl font-semibold text-ink">{t("title")}</h1>
+      <p className="text-muted">{session?.user?.email ?? session?.user?.name ?? "Пользователь"}</p>
 
-      <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-6">
-        <h2 className="font-semibold">{t("topUp")}</h2>
-        <p className="mt-1 text-xs text-slate-500">
-          Battle Power обновляется только после подтверждённого платежа.
-          Возвраты и chargeback пересчитывают территорию.
+      <div className="surface-card">
+        <h2 className="font-semibold text-ink">{t("topUp")}</h2>
+        <p className="mt-1 text-xs text-muted">
+          Battle Power обновляется только после подтверждённого платежа. Возвраты и chargeback
+          пересчитывают территорию.
         </p>
         <form onSubmit={handleTopUp} className="mt-4 space-y-3">
-          <label className="block text-sm">
+          <label className="block text-sm text-ink">
             {t("amount")}
             <input
               type="number"
               min={500}
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
-              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2"
+              className="input-field mt-1"
             />
           </label>
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded bg-sky-600 px-4 py-2 text-sm disabled:opacity-50"
-          >
+          <button type="submit" disabled={loading} className="btn-primary">
             {loading ? "..." : t("topUp")}
           </button>
         </form>
-        {message && (
-          <p className="mt-3 text-sm text-sky-300">{message}</p>
-        )}
+        {message && <p className="mt-3 text-sm text-accent">{message}</p>}
       </div>
     </div>
   );

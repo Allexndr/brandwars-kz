@@ -25,21 +25,17 @@ export default async function BrandPage({ params }: Props) {
 
   const territory = brand.territories[0];
   const categoryName =
-    locale === "kk"
-      ? brand.primaryCategory.nameKk
-      : brand.primaryCategory.nameRu;
+    locale === "kk" ? brand.primaryCategory.nameKk : brand.primaryCategory.nameRu;
 
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs uppercase tracking-wide text-slate-500">
-            Реклама · BrandWars.kz
-          </p>
-          <h1 className="text-3xl font-bold">{brand.name}</h1>
-          <p className="text-slate-400">{categoryName}</p>
+          <p className="text-xs uppercase tracking-wide text-muted">Реклама · BrandWars.kz</p>
+          <h1 className="font-display text-3xl font-semibold text-ink">{brand.name}</h1>
+          <p className="text-muted">{categoryName}</p>
           {brand.verificationStatus === "VERIFIED" && (
-            <span className="mt-2 inline-block rounded bg-emerald-900/40 px-2 py-0.5 text-xs text-emerald-400">
+            <span className="mt-2 inline-block rounded bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700">
               Проверенный бренд
             </span>
           )}
@@ -49,7 +45,7 @@ export default async function BrandPage({ params }: Props) {
             href={brand.websiteUrl}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium hover:bg-sky-500"
+            className="btn-primary text-sm"
           >
             Перейти на сайт
           </a>
@@ -63,29 +59,20 @@ export default async function BrandPage({ params }: Props) {
             label="Территория"
             value={`${Math.round(territory.territoryShare * 100)}%`}
           />
-          <Metric
-            label="Статус"
-            value={getRankLabel(territory.rank, locale)}
-          />
+          <Metric label="Статус" value={getRankLabel(territory.rank, locale)} />
         </div>
       )}
 
-      <p className="text-sm text-slate-500">
-        Рейтинг отражает игровую метрику BrandWars в текущем сезоне, а не
-        качество товаров или услуг. Формулировка: «лидер BrandWars в категории».
+      <p className="text-sm text-muted">
+        Рейтинг отражает игровую метрику BrandWars в текущем сезоне, а не качество товаров или
+        услуг. Формулировка: «лидер BrandWars в категории».
       </p>
 
       <div className="flex flex-wrap gap-3">
-        <Link
-          href={`/category/${brand.primaryCategory.slug}`}
-          className="rounded border border-slate-600 px-4 py-2 text-sm hover:border-sky-600"
-        >
+        <Link href={`/category/${brand.primaryCategory.slug}`} className="btn-secondary text-sm">
           Карта категории
         </Link>
-        <Link
-          href="/verify"
-          className="rounded border border-slate-600 px-4 py-2 text-sm hover:border-sky-600"
-        >
+        <Link href="/verify" className="btn-secondary text-sm">
           Верификация
         </Link>
       </div>
@@ -112,9 +99,9 @@ async function loadBrand(slug: string) {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-      <p className="text-xs text-slate-500">{label}</p>
-      <p className="text-2xl font-bold text-sky-400">{value}</p>
+    <div className="surface-card">
+      <p className="text-xs text-muted">{label}</p>
+      <p className="font-display text-2xl font-semibold text-primary">{value}</p>
     </div>
   );
 }

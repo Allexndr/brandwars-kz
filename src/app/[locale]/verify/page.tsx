@@ -31,22 +31,19 @@ export default async function VerifyPage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="text-3xl font-bold">Верификация бренда</h1>
-      <p className="text-slate-400">
+      <h1 className="font-display text-3xl font-semibold text-ink">Верификация бренда</h1>
+      <p className="text-muted">
         Подтверждение владельца даёт бейдж «Проверенный бренд» на карточке.
       </p>
       <div className="space-y-3">
         {METHODS.map((m) => (
-          <div
-            key={m.id}
-            className="rounded-xl border border-slate-800 bg-slate-900/40 p-4"
-          >
-            <h2 className="font-semibold">{m.title}</h2>
-            <p className="mt-1 text-sm text-slate-400">{m.desc}</p>
+          <div key={m.id} className="surface-card">
+            <h2 className="font-semibold text-ink">{m.title}</h2>
+            <p className="mt-1 text-sm text-muted">{m.desc}</p>
             <button
               type="button"
               disabled
-              className="mt-3 rounded border border-slate-700 px-3 py-1 text-xs text-slate-500"
+              className="btn-secondary mt-3 px-3 py-1.5 text-xs opacity-60"
             >
               Скоро (MVP stub)
             </button>

@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { prisma } from "@/lib/prisma";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -16,62 +17,137 @@ export default async function HomePage({ params }: Props) {
   let brandCount = 0;
   let categoryCount = 6;
   let seasonName = "—";
+  let leaders: Array<{ name: string; slug: string; category: string }> = [];
 
   try {
     [brandCount, categoryCount] = await Promise.all([
       prisma.brand.count({ where: { isActive: true } }),
       prisma.category.count({ where: { isActive: true } }),
     ]);
-    const season = await prisma.season.findFirst({
-      where: { status: "ACTIVE" },
-    });
+    const season = await prisma.season.findFirst({ where: { status: "ACTIVE" } });
     if (season) {
       seasonName = locale === "kk" ? season.nameKk : season.nameRu;
     }
+
+    const top = await prisma.territory.findMany({
+      where: { rank: 1 },
+      take: 3,
+      include: {
+        brand: { select: { name: true, slug: true } },
+        seasonCategory: { include: { category: true } },
+      },
+    });
+    leaders = top.map((row) => ({
+      name: row.brand.name,
+      slug: row.brand.slug,
+      category:
+        locale === "kk"
+          ? row.seasonCategory.category.nameKk
+          : row.seasonCategory.category.nameRu,
+    }));
   } catch {
-    // DB may be unavailable at build/runtime
+    // DB optional at build
   }
 
   return (
-    <div className="space-y-12">
-      <section className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-white md:text-5xl">
-          {t("title")}
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-400">
-          {t("subtitle")}
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-4">
-          <Link
-            href="/map"
-            className="rounded-lg bg-sky-600 px-6 py-3 font-medium hover:bg-sky-500"
-          >
-            {t("ctaMap")}
-          </Link>
-          <Link
-            href="/claim-brand"
-            className="rounded-lg border border-sky-600 px-6 py-3 font-medium text-sky-400 hover:bg-sky-950"
-          >
-            {t("ctaClaim")}
-          </Link>
+    <div className="space-y-16">
+      {/* Hero — light surface, dark band accent, no purple gradient */}
+      <section className="surface-card overflow-hidden p-0">
+        <div className="grid gap-0 md:grid-cols-2">
+          <div className="flex flex-col justify-center p-8 md:p-12">
+            <p className="text-sm font-semibold uppercase tracking-wide text-accent">
+              {t("eyebrow")}
+            </p>
+            <h1 className="mt-3 font-display text-4xl font-semibold leading-tight text-ink md:text-5xl">
+              {t("heroTitle")}
+            </h1>
+            <p className="mt-4 max-w-md text-lg text-muted">{t("subtitle")}</p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/claim-brand" className="btn-primary text-center">
+                {t("ctaClaimFull")}
+              </Link>
+              <Link href="/map" className="btn-secondary text-center">
+                {t("ctaMap")}
+              </Link>
+            </div>
+            <p className="mt-4 text-xs text-muted">{t("legalNote")}</p>
+          </div>
+          <div className="section-band relative flex min-h-[280px] items-center justify-center p-8">
+            <div className="grid grid-cols-3 gap-3">
+              {["travel", "beauty", "code", "games", "marketing", "ai-agents"].map(
+                (slug) => (
+                  <div
+                    key={slug}
+                    className="flex flex-col items-center gap-2 rounded-brand bg-white/10 p-3"
+                  >
+                    <Image
+                      src={`/assets/ui/category-${slug}.png`}
+                      alt=""
+                      width={40}
+                      height={40}
+                      className="pixelated"
+                    />
+                  </div>
+                ),
+              )}
+            </div>
+            <p className="absolute bottom-4 left-0 right-0 text-center text-xs text-white/70">
+              6 материков · сезон {seasonName}
+            </p>
+          </div>
         </div>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-3">
+      {/* Stats — whitespace separation, no gray borders everywhere */}
+      <section className="grid gap-6 sm:grid-cols-3">
         <StatCard label={t("statsBrands")} value={brandCount} />
         <StatCard label={t("statsCategories")} value={categoryCount} />
         <StatCard label={t("statsSeason")} value={seasonName} isText />
       </section>
 
-      <section className="rounded-xl border border-slate-800 bg-slate-900/40 p-6">
-        <h2 className="text-xl font-semibold">Как это работает</h2>
-        <ol className="mt-4 list-decimal space-y-2 pl-5 text-slate-400">
-          <li>Бренд добавляет ссылку и выбирает категорию (материк)</li>
-          <li>После модерации появляется страна на карте</li>
-          <li>Сила поддержки влияет на территорию — не «лучший бренд», а лидер BrandWars</li>
-          <li>Пользователи поддерживают бренды и делятся сезонными достижениями</li>
+      {/* 3-step path to payment (book 37: TTV <60s) */}
+      <section className="surface-card">
+        <h2 className="font-display text-2xl font-semibold text-ink">{t("howTitle")}</h2>
+        <ol className="mt-8 grid gap-8 md:grid-cols-3">
+          {[
+            { n: "1", title: t("how1title"), body: t("how1body") },
+            { n: "2", title: t("how2title"), body: t("how2body") },
+            { n: "3", title: t("how3title"), body: t("how3body") },
+          ].map((item) => (
+            <li key={item.n} className="flex gap-4">
+              <span className="step-dot step-dot-active shrink-0">{item.n}</span>
+              <div>
+                <h3 className="font-semibold text-ink">{item.title}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-muted">{item.body}</p>
+              </div>
+            </li>
+          ))}
         </ol>
+        <div className="mt-8 border-t border-[var(--color-border)] pt-6">
+          <Link href="/claim-brand" className="btn-primary">
+            {t("ctaClaimFull")}
+          </Link>
+        </div>
       </section>
+
+      {leaders.length > 0 && (
+        <section>
+          <h2 className="font-display text-xl font-semibold text-ink">{t("leadersTitle")}</h2>
+          <ul className="mt-4 space-y-2">
+            {leaders.map((l) => (
+              <li key={l.slug}>
+                <Link
+                  href={`/brand/${l.slug}`}
+                  className="flex items-center justify-between rounded-brand bg-[var(--color-surface-soft)] px-4 py-3 hover:bg-white"
+                >
+                  <span className="font-medium text-ink">{l.name}</span>
+                  <span className="text-sm text-muted">{l.category}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }
@@ -86,9 +162,11 @@ function StatCard({
   isText?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6 text-center">
-      <p className="text-sm text-slate-400">{label}</p>
-      <p className={`mt-2 font-bold text-sky-400 ${isText ? "text-lg" : "text-3xl"}`}>
+    <div className="surface-card text-center">
+      <p className="text-sm font-medium text-muted">{label}</p>
+      <p
+        className={`mt-2 font-display font-semibold text-primary ${isText ? "text-xl" : "text-4xl"}`}
+      >
         {value}
       </p>
     </div>

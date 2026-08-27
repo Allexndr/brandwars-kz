@@ -51,34 +51,31 @@ export function CategoryMap({ categorySlug, locale = "ru" }: CategoryMapProps) {
 
   if (loading) {
     return (
-      <div className="flex h-[480px] items-center justify-center rounded-xl border border-slate-800 bg-slate-900/40">
-        <p className="text-slate-400">Загрузка карты...</p>
+      <div className="surface-card flex h-[480px] items-center justify-center">
+        <p className="text-muted">Загрузка карты...</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">{categoryName}</h2>
+      <h2 className="font-display text-xl font-semibold text-ink">{categoryName}</h2>
       <MapCanvas
         territories={territories}
         categorySlug={categorySlug}
         onSelect={setSelected}
       />
       {selected && (
-        <div className="rounded-xl border border-sky-800 bg-slate-900 p-4">
+        <div className="surface-card border-l-4 border-primary">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-lg font-semibold">{selected.name}</p>
-              <p className="text-sm text-slate-400">
+              <p className="text-lg font-semibold text-ink">{selected.name}</p>
+              <p className="text-sm text-muted">
                 #{selected.rank} · {Math.round(selected.territoryShare * 100)}% ·{" "}
                 {selected.rankLabel}
               </p>
             </div>
-            <Link
-              href={`/brand/${selected.slug}`}
-              className="rounded bg-sky-600 px-3 py-1.5 text-sm hover:bg-sky-500"
-            >
+            <Link href={`/brand/${selected.slug}`} className="btn-primary px-4 py-2 text-sm">
               Карточка
             </Link>
           </div>
@@ -191,7 +188,7 @@ export function MapCanvas({
   return (
     <div
       ref={containerRef}
-      className="pixelated w-full overflow-hidden rounded-xl border border-slate-800"
+      className="pixelated surface-card w-full overflow-hidden p-0"
     >
       <canvas ref={canvasRef} className="w-full" />
     </div>

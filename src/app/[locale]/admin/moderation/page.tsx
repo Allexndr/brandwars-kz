@@ -40,37 +40,34 @@ export default function AdminModerationPage() {
     load();
   }
 
-  if (loading) return <p className="text-slate-400">Загрузка...</p>;
+  if (loading) return <p className="text-muted">Загрузка...</p>;
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">{t("moderation")}</h1>
+      <h1 className="font-display text-2xl font-semibold text-ink">{t("moderation")}</h1>
       {cases.length === 0 ? (
-        <p className="text-slate-400">Нет открытых заявок</p>
+        <p className="text-muted">Нет открытых заявок</p>
       ) : (
         <ul className="space-y-4">
           {cases.map((c) => (
-            <li
-              key={c.id}
-              className="rounded-xl border border-slate-800 bg-slate-900/40 p-4"
-            >
-              <p className="font-semibold">{c.brandClaim.brandName}</p>
-              <p className="text-sm text-slate-400">{c.brandClaim.websiteUrl}</p>
-              <p className="text-sm">
+            <li key={c.id} className="surface-card">
+              <p className="font-semibold text-ink">{c.brandClaim.brandName}</p>
+              <p className="text-sm text-muted">{c.brandClaim.websiteUrl}</p>
+              <p className="text-sm text-ink">
                 {c.brandClaim.bidAmountKzt} ₸ · {c.brandClaim.contactEmail}
               </p>
               <div className="mt-3 flex gap-2">
                 <button
                   type="button"
                   onClick={() => act(c.id, "approve")}
-                  className="rounded bg-emerald-700 px-3 py-1 text-sm hover:bg-emerald-600"
+                  className="rounded-[var(--radius-sm)] bg-emerald-600 px-3 py-1.5 text-sm text-white hover:bg-emerald-700"
                 >
                   {t("approve")}
                 </button>
                 <button
                   type="button"
                   onClick={() => act(c.id, "reject")}
-                  className="rounded bg-red-900 px-3 py-1 text-sm hover:bg-red-800"
+                  className="rounded-[var(--radius-sm)] bg-red-100 px-3 py-1.5 text-sm text-red-700 hover:bg-red-200"
                 >
                   {t("reject")}
                 </button>

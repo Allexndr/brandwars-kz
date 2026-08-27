@@ -8,23 +8,25 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      colors: {
-        brand: {
-          50: "#f0f9ff",
-          100: "#e0f2fe",
-          500: "#0ea5e9",
-          600: "#0284c7",
-          700: "#0369a1",
-          900: "#0c4a6e",
-        },
-        planet: {
-          bg: "#0f172a",
-          land: "#1e293b",
-          accent: "#38bdf8",
-        },
-      },
       fontFamily: {
-        pixel: ["var(--font-pixel)", "monospace"],
+        display: ["var(--font-literata)", "Georgia", "serif"],
+        body: ["var(--font-manrope)", "system-ui", "sans-serif"],
+      },
+      colors: {
+        ink: "var(--color-ink)",
+        primary: {
+          DEFAULT: "var(--color-primary)",
+          hover: "var(--color-primary-hover)",
+        },
+        accent: "var(--color-accent)",
+        surface: {
+          DEFAULT: "var(--color-surface)",
+          soft: "var(--color-surface-soft)",
+        },
+        muted: "var(--color-text-muted)",
+      },
+      borderRadius: {
+        brand: "var(--radius-md)",
       },
     },
   },

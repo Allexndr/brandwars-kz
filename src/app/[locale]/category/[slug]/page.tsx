@@ -68,7 +68,7 @@ export default async function CategoryPage({ params }: Props) {
     <div className="space-y-8">
       <CategoryMap categorySlug={slug} locale={locale} />
       <section>
-        <h2 className="mb-4 text-xl font-semibold">Рейтинг категории</h2>
+        <h2 className="mb-4 font-display text-xl font-semibold text-ink">Рейтинг категории</h2>
         <LeaderboardTable entries={entries} locale={locale} />
       </section>
     </div>

@@ -17,41 +17,35 @@ type LeaderboardTableProps = {
 export function LeaderboardTable({ entries }: LeaderboardTableProps) {
   if (entries.length === 0) {
     return (
-      <p className="rounded-lg border border-slate-800 bg-slate-900/40 p-6 text-center text-slate-400">
-        Пока нет данных для рейтинга
-      </p>
+      <p className="surface-card text-center text-muted">Пока нет данных для рейтинга</p>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-800">
+    <div className="surface-card overflow-x-auto p-0">
       <table className="w-full min-w-[480px] text-left text-sm">
-        <thead className="bg-slate-900 text-slate-400">
+        <thead className="bg-[var(--color-surface-soft)] text-muted">
           <tr>
-            <th className="px-4 py-3">#</th>
-            <th className="px-4 py-3">Бренд</th>
-            <th className="px-4 py-3">Категория</th>
-            <th className="px-4 py-3">Сила</th>
-            <th className="px-4 py-3">Территория</th>
-            <th className="px-4 py-3">Статус</th>
+            <th className="px-4 py-3 font-medium">#</th>
+            <th className="px-4 py-3 font-medium">Бренд</th>
+            <th className="px-4 py-3 font-medium">Категория</th>
+            <th className="px-4 py-3 font-medium">Сила</th>
+            <th className="px-4 py-3 font-medium">Территория</th>
+            <th className="px-4 py-3 font-medium">Статус</th>
           </tr>
         </thead>
         <tbody>
           {entries.map((entry) => (
             <tr
               key={`${entry.categorySlug}-${entry.brandSlug}`}
-              className="border-t border-slate-800 hover:bg-slate-900/50"
+              className="border-t border-[var(--color-border)] hover:bg-[var(--color-surface-soft)]"
             >
-              <td className="px-4 py-3 font-mono text-sky-400">{entry.rank}</td>
-              <td className="px-4 py-3 font-medium">{entry.brandName}</td>
-              <td className="px-4 py-3 text-slate-400">{entry.categoryName}</td>
+              <td className="px-4 py-3 font-mono text-primary">{entry.rank}</td>
+              <td className="px-4 py-3 font-medium text-ink">{entry.brandName}</td>
+              <td className="px-4 py-3 text-muted">{entry.categoryName}</td>
               <td className="px-4 py-3">{Math.round(entry.battlePower)}</td>
-              <td className="px-4 py-3">
-                {Math.round(entry.territoryShare * 100)}%
-              </td>
-              <td className="px-4 py-3 text-xs text-amber-300/80">
-                {entry.rankLabel}
-              </td>
+              <td className="px-4 py-3">{Math.round(entry.territoryShare * 100)}%</td>
+              <td className="px-4 py-3 text-xs text-primary">{entry.rankLabel}</td>
             </tr>
           ))}
         </tbody>

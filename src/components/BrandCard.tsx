@@ -26,12 +26,9 @@ export function BrandCard({
   const isLeader = rank === 1;
 
   return (
-    <Link
-      href={`/brand/${slug}`}
-      className="group block rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition hover:border-sky-700 hover:bg-slate-900"
-    >
+    <Link href={`/brand/${slug}`} className="surface-card group block transition hover:shadow-lg">
       <div className="flex items-start gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-800 text-lg font-bold text-sky-400">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-soft)] text-lg font-bold text-primary">
           {logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={logoUrl} alt="" className="h-full w-full rounded-lg object-cover" />
@@ -41,24 +38,20 @@ export function BrandCard({
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="truncate font-semibold text-white group-hover:text-sky-300">
-              {name}
-            </h3>
+            <h3 className="truncate font-semibold text-ink group-hover:text-primary">{name}</h3>
             {isVerified && (
-              <span className="rounded bg-emerald-900/50 px-1.5 py-0.5 text-[10px] uppercase text-emerald-400">
+              <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] uppercase text-emerald-700">
                 ✓
               </span>
             )}
             {isLeader && (
-              <span className="rounded bg-amber-900/50 px-1.5 py-0.5 text-[10px] text-amber-300">
+              <span className="rounded bg-orange-50 px-1.5 py-0.5 text-[10px] text-primary">
                 {getRankLabel(1, locale)}
               </span>
             )}
           </div>
-          {categoryName && (
-            <p className="mt-0.5 text-xs text-slate-400">{categoryName}</p>
-          )}
-          <div className="mt-2 flex gap-3 text-xs text-slate-500">
+          {categoryName && <p className="mt-0.5 text-xs text-muted">{categoryName}</p>}
+          <div className="mt-2 flex gap-3 text-xs text-muted">
             {rank != null && <span>#{rank}</span>}
             {territoryShare != null && (
               <span>{Math.round(territoryShare * 100)}% территории</span>
@@ -66,7 +59,7 @@ export function BrandCard({
           </div>
         </div>
       </div>
-      <p className="mt-2 text-[10px] uppercase tracking-wide text-slate-600">
+      <p className="mt-2 text-[10px] uppercase tracking-wide text-muted">
         Реклама · игровая метрика BrandWars
       </p>
     </Link>

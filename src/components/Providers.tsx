@@ -17,9 +17,7 @@ export function Providers({ children, locale, messages }: ProvidersProps) {
       <NextIntlClientProvider locale={locale} messages={messages}>
         <div className="flex min-h-screen flex-col">
           <Header />
-          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
-            {children}
-          </main>
+          <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">{children}</main>
           <Footer />
         </div>
       </NextIntlClientProvider>

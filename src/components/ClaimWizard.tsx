@@ -3,14 +3,15 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
+import { signIn, useSession } from "next-auth/react";
 
 const CATEGORIES = [
-  { slug: "travel", min: 2000 },
-  { slug: "beauty", min: 2000 },
-  { slug: "code", min: 1500 },
-  { slug: "ai-agents", min: 1500 },
-  { slug: "games", min: 1500 },
-  { slug: "marketing", min: 2000 },
+  { slug: "travel", label: "Travelia", min: 2000 },
+  { slug: "beauty", label: "Beauty Republic", min: 2000 },
+  { slug: "code", label: "Codeverse", min: 1500 },
+  { slug: "ai-agents", label: "Agentoria", min: 1500 },
+  { slug: "games", label: "Game Islands", min: 1500 },
+  { slug: "marketing", label: "Marketland", min: 2000 },
 ];
 
 type Metadata = {
@@ -24,6 +25,8 @@ export function ClaimWizard() {
   const t = useTranslations("claim");
   const tc = useTranslations("common");
   const router = useRouter();
+  const { data: session, status } = useSession();
+
   const [step, setStep] = useState(1);
   const [url, setUrl] = useState("");
   const [metadata, setMetadata] = useState<Metadata | null>(null);
@@ -37,7 +40,7 @@ export function ClaimWizard() {
 
   const selectedCategory = CATEGORIES.find((c) => c.slug === categorySlug);
 
-  async function fetchMetadata() {
+  async function fetchMetadataAndContinue() {
     setLoading(true);
     setError(null);
     try {
@@ -58,11 +61,16 @@ export function ClaimWizard() {
     }
   }
 
-  async function submitClaim() {
+  async function submitAndPay() {
+    if (!session?.user) {
+      setError(t("loginRequired"));
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/brand-claims", {
+      const claimRes = await fetch("/api/brand-claims", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -74,8 +82,32 @@ export function ClaimWizard() {
           metadata: metadata ?? {},
         }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(JSON.stringify(data.error));
+      const claimData = await claimRes.json();
+      if (!claimRes.ok) throw new Error(JSON.stringify(claimData.error));
+
+      const payRes = await fetch("/api/dashboard/top-up", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amountKzt: bidAmount,
+          idempotencyKey: `claim_${claimData.claim.id}`,
+        }),
+      });
+      const payData = await payRes.json();
+      if (!payRes.ok) throw new Error(JSON.stringify(payData.error));
+
+      if (payData.testMode && payData.order?.providerOrderId) {
+        const confirmRes = await fetch("/api/payments/confirm-test", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            providerOrderId: payData.order.providerOrderId,
+            orderId: payData.order.id,
+          }),
+        });
+        if (!confirmRes.ok) throw new Error("Payment confirm failed");
+      }
+
       setDone(true);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error");
@@ -86,93 +118,87 @@ export function ClaimWizard() {
 
   if (done) {
     return (
-      <div className="rounded-xl border border-emerald-800 bg-emerald-950/30 p-6 text-center">
-        <p className="text-lg text-emerald-300">{t("success")}</p>
+      <div className="surface-card border-l-4 border-l-accent text-center">
+        <p className="font-display text-xl font-semibold text-ink">{t("successPaid")}</p>
+        <p className="mt-2 text-sm text-muted">{t("successModeration")}</p>
         <button
           type="button"
-          onClick={() => router.push("/brands")}
-          className="mt-4 rounded bg-sky-600 px-4 py-2 text-sm hover:bg-sky-500"
+          onClick={() => router.push("/map")}
+          className="btn-primary mt-6"
         >
-          {tc("learnMore")}
+          {t("goMap")}
         </button>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
-      <div className="mb-6 flex gap-2">
-        {[1, 2, 3, 4, 5].map((s) => (
-          <div
-            key={s}
-            className={`h-1 flex-1 rounded ${s <= step ? "bg-sky-500" : "bg-slate-700"}`}
-          />
+    <div className="surface-card">
+      {/* Progress: 3 steps only */}
+      <div className="mb-8 flex items-center gap-3">
+        {[
+          { n: 1, label: t("flowLink") },
+          { n: 2, label: t("flowDetails") },
+          { n: 3, label: t("flowPay") },
+        ].map((s, i) => (
+          <div key={s.n} className="flex flex-1 items-center gap-2">
+            <span
+              className={`step-dot ${step > s.n ? "step-dot-done" : step === s.n ? "step-dot-active" : "step-dot-pending"}`}
+            >
+              {s.n}
+            </span>
+            <span className="hidden text-xs font-medium text-muted sm:inline">{s.label}</span>
+            {i < 2 && <div className="h-px flex-1 bg-[var(--color-border)]" />}
+          </div>
         ))}
       </div>
 
       {error && (
-        <p className="mb-4 rounded bg-red-950/50 px-3 py-2 text-sm text-red-300">
-          {error}
-        </p>
+        <p className="mb-4 rounded-brand bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
       )}
 
       {step === 1 && (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">{t("step1")}</h2>
+          <h2 className="font-display text-xl font-semibold">{t("step1")}</h2>
+          <p className="text-sm text-muted">{t("step1hint")}</p>
           <input
             type="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder={t("urlPlaceholder")}
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+            className="input-field"
           />
           <button
             type="button"
             disabled={!url || loading}
-            onClick={fetchMetadata}
-            className="rounded bg-sky-600 px-4 py-2 text-sm disabled:opacity-50"
+            onClick={fetchMetadataAndContinue}
+            className="btn-primary"
           >
             {loading ? tc("loading") : tc("next")}
           </button>
         </div>
       )}
 
-      {step === 2 && metadata && (
+      {step === 2 && (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">{t("step2")}</h2>
-          <div className="flex gap-4 rounded-lg border border-slate-700 p-4">
-            {metadata.ogImage && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={metadata.ogImage}
-                alt=""
-                className="h-20 w-20 rounded object-cover"
-              />
-            )}
-            <div>
-              <p className="font-medium">{metadata.title}</p>
-              <p className="text-sm text-slate-400">{metadata.description}</p>
+          <h2 className="font-display text-xl font-semibold">{t("flowDetails")}</h2>
+          {metadata && (
+            <div className="flex gap-4 rounded-brand bg-[var(--color-surface-soft)] p-4">
+              {metadata.ogImage && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={metadata.ogImage} alt="" className="h-16 w-16 rounded object-cover" />
+              )}
+              <div>
+                <p className="font-medium">{metadata.title}</p>
+                <p className="line-clamp-2 text-sm text-muted">{metadata.description}</p>
+              </div>
             </div>
-          </div>
-          <div className="flex gap-2">
-            <button type="button" onClick={() => setStep(1)} className="rounded border border-slate-600 px-4 py-2 text-sm">
-              {tc("back")}
-            </button>
-            <button type="button" onClick={() => setStep(3)} className="rounded bg-sky-600 px-4 py-2 text-sm">
-              {tc("next")}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {step === 3 && (
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">{t("step3")}</h2>
+          )}
           <input
             value={brandName}
             onChange={(e) => setBrandName(e.target.value)}
-            placeholder="Brand name"
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+            placeholder={t("brandNamePlaceholder")}
+            className="input-field"
           />
           <select
             value={categorySlug}
@@ -181,11 +207,11 @@ export function ClaimWizard() {
               const cat = CATEGORIES.find((c) => c.slug === e.target.value);
               if (cat) setBidAmount(cat.min);
             }}
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+            className="input-field"
           >
             {CATEGORIES.map((c) => (
               <option key={c.slug} value={c.slug}>
-                {c.slug} (min {c.min} ₸)
+                {c.label} — от {c.min.toLocaleString("ru-KZ")} ₸
               </option>
             ))}
           </select>
@@ -193,66 +219,88 @@ export function ClaimWizard() {
             type="email"
             value={contactEmail}
             onChange={(e) => setContactEmail(e.target.value)}
-            placeholder="email@company.kz"
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+            placeholder={t("emailPlaceholder")}
+            className="input-field"
           />
-          <div className="flex gap-2">
-            <button type="button" onClick={() => setStep(2)} className="rounded border border-slate-600 px-4 py-2 text-sm">
-              {tc("back")}
-            </button>
-            <button type="button" onClick={() => setStep(4)} className="rounded bg-sky-600 px-4 py-2 text-sm">
-              {tc("next")}
-            </button>
+          <div>
+            <label className="text-sm font-medium text-ink">{t("bidLabel")}</label>
+            <input
+              type="number"
+              value={bidAmount}
+              min={selectedCategory?.min ?? 1500}
+              step={500}
+              onChange={(e) => setBidAmount(Number(e.target.value))}
+              className="input-field mt-1"
+            />
+            <p className="mt-1 text-xs text-muted">{t("bidHint")}</p>
           </div>
-        </div>
-      )}
-
-      {step === 4 && (
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">{t("step4")}</h2>
-          <p className="text-sm text-slate-400">
-            Минимум: {selectedCategory?.min ?? 2000} ₸. Рейтинг отражает игровую метрику BrandWars.
-          </p>
-          <input
-            type="number"
-            value={bidAmount}
-            min={selectedCategory?.min ?? 2000}
-            onChange={(e) => setBidAmount(Number(e.target.value))}
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
-          />
-          <div className="flex gap-2">
-            <button type="button" onClick={() => setStep(3)} className="rounded border border-slate-600 px-4 py-2 text-sm">
-              {tc("back")}
-            </button>
-            <button type="button" onClick={() => setStep(5)} className="rounded bg-sky-600 px-4 py-2 text-sm">
-              {tc("next")}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {step === 5 && (
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">{t("step5")}</h2>
-          <dl className="space-y-2 text-sm">
-            <div className="flex justify-between"><dt className="text-slate-400">URL</dt><dd>{url}</dd></div>
-            <div className="flex justify-between"><dt className="text-slate-400">Бренд</dt><dd>{brandName}</dd></div>
-            <div className="flex justify-between"><dt className="text-slate-400">Категория</dt><dd>{categorySlug}</dd></div>
-            <div className="flex justify-between"><dt className="text-slate-400">Ставка</dt><dd>{bidAmount} ₸</dd></div>
-          </dl>
-          <div className="flex gap-2">
-            <button type="button" onClick={() => setStep(4)} className="rounded border border-slate-600 px-4 py-2 text-sm">
+          <div className="flex gap-3">
+            <button type="button" onClick={() => setStep(1)} className="btn-secondary">
               {tc("back")}
             </button>
             <button
               type="button"
-              disabled={loading}
-              onClick={submitClaim}
-              className="rounded bg-emerald-600 px-4 py-2 text-sm disabled:opacity-50"
+              disabled={!brandName || !contactEmail}
+              onClick={() => setStep(3)}
+              className="btn-primary"
             >
-              {loading ? tc("loading") : tc("submit")}
+              {t("toPayment")}
             </button>
           </div>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div className="space-y-4">
+          <h2 className="font-display text-xl font-semibold">{t("flowPay")}</h2>
+          <dl className="space-y-2 rounded-brand bg-[var(--color-surface-soft)] p-4 text-sm">
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted">Бренд</dt>
+              <dd className="font-medium">{brandName}</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted">Категория</dt>
+              <dd>{selectedCategory?.label}</dd>
+            </div>
+            <div className="flex justify-between gap-4 border-t border-[var(--color-border)] pt-2">
+              <dt className="font-semibold text-ink">К оплате</dt>
+              <dd className="font-display text-xl font-semibold text-primary">
+                {bidAmount.toLocaleString("ru-KZ")} ₸
+              </dd>
+            </div>
+          </dl>
+          <p className="text-xs text-muted">{t("refundNote")}</p>
+
+          {status === "loading" ? (
+            <p className="text-sm text-muted">{tc("loading")}</p>
+          ) : !session?.user ? (
+            <div className="space-y-3">
+              <p className="text-sm text-muted">{t("loginRequired")}</p>
+              <button
+                type="button"
+                onClick={() =>
+                  signIn(undefined, { callbackUrl: "/claim-brand" })
+                }
+                className="btn-primary w-full"
+              >
+                {t("loginToPay")}
+              </button>
+            </div>
+          ) : (
+            <div className="flex gap-3">
+              <button type="button" onClick={() => setStep(2)} className="btn-secondary">
+                {tc("back")}
+              </button>
+              <button
+                type="button"
+                disabled={loading}
+                onClick={submitAndPay}
+                className="btn-primary flex-1"
+              >
+                {loading ? tc("loading") : t("payCta", { amount: bidAmount.toLocaleString("ru-KZ") })}
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

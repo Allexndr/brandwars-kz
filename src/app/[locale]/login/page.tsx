@@ -7,8 +7,9 @@ import { Suspense, useState } from "react";
 
 function LoginForm() {
   const t = useTranslations("nav");
+  const tc = useTranslations("claim");
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/ru/dashboard";
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/ru/claim-brand";
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -20,19 +21,20 @@ function LoginForm() {
   }
 
   return (
-    <div className="mx-auto max-w-md space-y-6 rounded-xl border border-slate-800 bg-slate-900/40 p-6">
-      <h1 className="text-2xl font-bold">{t("login")}</h1>
+    <div className="surface-card mx-auto max-w-md space-y-6">
+      <h1 className="font-display text-2xl font-semibold text-ink">{t("login")}</h1>
+      <p className="text-sm text-muted">{tc("loginRequired")}</p>
 
       <button
         type="button"
         onClick={() => signIn("google", { callbackUrl })}
-        className="w-full rounded border border-slate-600 py-2 text-sm hover:border-sky-600"
+        className="btn-secondary w-full"
       >
         Google
       </button>
 
-      <div className="relative text-center text-xs text-slate-500">
-        <span className="bg-slate-900 px-2">или email</span>
+      <div className="relative text-center text-xs text-muted">
+        <span className="bg-[var(--color-surface)] px-2">или email</span>
       </div>
 
       <form onSubmit={handleEmail} className="space-y-3">
@@ -42,14 +44,10 @@ function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@company.kz"
-          className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2"
+          className="input-field"
         />
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded bg-sky-600 py-2 text-sm disabled:opacity-50"
-        >
-          Magic link
+        <button type="submit" disabled={loading} className="btn-primary w-full">
+          Получить ссылку для входа
         </button>
       </form>
     </div>

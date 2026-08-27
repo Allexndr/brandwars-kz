@@ -41,22 +41,17 @@ export default async function HallOfFamePage({ params }: Props) {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Зал славы</h1>
-      <p className="text-slate-400">
-        {locale === "kk" ? season.nameKk : season.nameRu}
-      </p>
+      <h1 className="font-display text-3xl font-semibold text-ink">Зал славы</h1>
+      <p className="text-muted">{locale === "kk" ? season.nameKk : season.nameRu}</p>
       {winners.length === 0 ? (
-        <p className="text-slate-500">Победители сезона пока не определены</p>
+        <p className="text-muted">Победители сезона пока не определены</p>
       ) : (
         <ul className="space-y-3">
           {winners.map((w) => (
-            <li
-              key={`${w.category}-${w.slug}`}
-              className="rounded-xl border border-amber-900/40 bg-amber-950/20 p-4"
-            >
-              <p className="text-sm text-amber-400/80">{w.category}</p>
-              <p className="text-lg font-semibold">{w.brand}</p>
-              <p className="text-xs text-slate-500">{w.label}</p>
+            <li key={`${w.category}-${w.slug}`} className="surface-card border-l-4 border-primary">
+              <p className="text-sm text-primary">{w.category}</p>
+              <p className="font-display text-lg font-semibold text-ink">{w.brand}</p>
+              <p className="text-xs text-muted">{w.label}</p>
             </li>
           ))}
         </ul>

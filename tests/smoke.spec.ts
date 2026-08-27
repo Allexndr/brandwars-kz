@@ -3,8 +3,9 @@ import { test, expect } from "@playwright/test";
 test.describe("BrandWars.kz smoke", () => {
   test("homepage loads", async ({ page }) => {
     await page.goto("/ru");
+    await expect(page.getByRole("link", { name: /BrandWars/i })).toBeVisible();
     await expect(page.getByRole("heading", { level: 1 })).toContainText(
-      /BrandWars/i,
+      /страна на карте/i,
     );
   });
 
