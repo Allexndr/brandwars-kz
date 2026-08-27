@@ -31,7 +31,7 @@ pnpm prisma db seed
 pnpm dev
 ```
 
-Открой [http://localhost:3000](http://localhost:3000).
+Открой [http://localhost:3100/ru](http://localhost:3100/ru).
 
 ## Jules — автоматизация разработки
 

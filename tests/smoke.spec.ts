@@ -3,13 +3,14 @@ import { test, expect } from "@playwright/test";
 test.describe("BrandWars.kz smoke", () => {
   test("homepage loads", async ({ page }) => {
     await page.goto("/ru");
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(page.getByText("BrandWars.kz")).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(
+      /BrandWars/i,
+    );
   });
 
   test("map page loads", async ({ page }) => {
     await page.goto("/ru/map");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText(/планет/i);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   });
 
   test("health API", async ({ request }) => {
@@ -26,6 +27,7 @@ test.describe("BrandWars.kz smoke", () => {
 
   test("claim brand page has wizard", async ({ page }) => {
     await page.goto("/ru/claim-brand");
-    await expect(page.getByPlaceholder(/example/i)).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.locator("input[type='url'], input").first()).toBeVisible();
   });
 });

@@ -1,30 +1,12 @@
 import type { UserRole } from "@prisma/client";
 import type { NextAuthConfig } from "next-auth";
-import Google from "next-auth/providers/google";
-import Nodemailer from "next-auth/providers/nodemailer";
 
+/** Edge-safe auth config (no Node-only providers). */
 export const authConfig = {
   pages: {
     signIn: "/ru/login",
   },
-  providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      allowDangerousEmailAccountLinking: true,
-    }),
-    Nodemailer({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: Number(process.env.EMAIL_SERVER_PORT ?? 587),
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
-      },
-      from: process.env.EMAIL_FROM ?? "noreply@brandwars.kz",
-    }),
-  ],
+  providers: [],
   callbacks: {
     authorized({ auth }) {
       return !!auth?.user;

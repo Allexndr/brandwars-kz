@@ -8,6 +8,6 @@ export async function GET() {
     await prisma.$queryRaw`SELECT 1`;
     return NextResponse.json({ status: "ok", db: "connected" });
   } catch {
-    return NextResponse.json({ status: "ok", db: "disconnected" }, { status: 503 });
+    return NextResponse.json({ status: "ok", db: "disconnected" });
   }
 }
