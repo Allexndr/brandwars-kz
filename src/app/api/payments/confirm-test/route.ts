@@ -62,5 +62,43 @@ export async function POST(request: NextRequest) {
     });
   }
 
+  // Link payment to BrandClaim and ensure ModerationCase is open
+  const metadataClaimId = (order.metadata as Record<string, unknown> | null)?.claimId as string | undefined;
+  const idempotencyClaimId = order.idempotencyKey.startsWith("claim_")
+    ? order.idempotencyKey.replace("claim_", "")
+    : undefined;
+  const claimId = metadataClaimId ?? idempotencyClaimId;
+
+  if (claimId) {
+    const claim = await prisma.brandClaim.findUnique({
+      where: { id: claimId },
+    });
+    if (claim) {
+      const existingMeta = (claim.metadata as Record<string, unknown> | null) ?? {};
+      await prisma.brandClaim.update({
+        where: { id: claimId },
+        data: {
+          metadata: {
+            ...existingMeta,
+            paid: true,
+            paidAt: new Date().toISOString(),
+            paymentOrderId: order.id,
+          },
+        },
+      });
+
+      await prisma.moderationCase.upsert({
+        where: { brandClaimId: claimId },
+        create: {
+          brandClaimId: claimId,
+          status: "OPEN",
+        },
+        update: {
+          status: "OPEN",
+        },
+      });
+    }
+  }
+
   return NextResponse.json({ ok: true, status: "paid" });
 }
