@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { signIn, useSession } from "next-auth/react";
@@ -39,6 +39,45 @@ export function ClaimWizard() {
   const [done, setDone] = useState(false);
 
   const selectedCategory = CATEGORIES.find((c) => c.slug === categorySlug);
+
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem("claim_wizard_state");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.url) setUrl(parsed.url);
+        if (parsed.metadata) setMetadata(parsed.metadata);
+        if (parsed.brandName) setBrandName(parsed.brandName);
+        if (parsed.categorySlug) setCategorySlug(parsed.categorySlug);
+        if (parsed.contactEmail) setContactEmail(parsed.contactEmail);
+        if (parsed.bidAmount) setBidAmount(parsed.bidAmount);
+        if (parsed.step) setStep(parsed.step);
+        sessionStorage.removeItem("claim_wizard_state");
+      }
+    } catch {
+      // Ignore storage errors
+    }
+  }, []);
+
+  function handleLoginRedirect() {
+    try {
+      sessionStorage.setItem(
+        "claim_wizard_state",
+        JSON.stringify({
+          url,
+          metadata,
+          brandName,
+          categorySlug,
+          contactEmail,
+          bidAmount,
+          step: 3,
+        }),
+      );
+    } catch {
+      // Ignore storage errors
+    }
+    signIn(undefined, { callbackUrl: "/claim-brand" });
+  }
 
   async function fetchMetadataAndContinue() {
     setLoading(true);
@@ -90,6 +129,7 @@ export function ClaimWizard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amountKzt: bidAmount,
+          claimId: claimData.claim.id,
           idempotencyKey: `claim_${claimData.claim.id}`,
         }),
       });
@@ -108,6 +148,7 @@ export function ClaimWizard() {
         if (!confirmRes.ok) throw new Error("Payment confirm failed");
       }
 
+      sessionStorage.removeItem("claim_wizard_state");
       setDone(true);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error");
@@ -278,9 +319,7 @@ export function ClaimWizard() {
               <p className="text-sm text-muted">{t("loginRequired")}</p>
               <button
                 type="button"
-                onClick={() =>
-                  signIn(undefined, { callbackUrl: "/claim-brand" })
-                }
+                onClick={handleLoginRedirect}
                 className="btn-primary w-full"
               >
                 {t("loginToPay")}

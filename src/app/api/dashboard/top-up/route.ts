@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 const schema = z.object({
   amountKzt: z.number().int().positive(),
   brandId: z.string().optional(),
+  claimId: z.string().optional(),
   idempotencyKey: z.string().optional(),
 });
 
@@ -41,12 +42,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ order: existing });
   }
 
+  const orderMetadata = parsed.data.claimId
+    ? { claimId: parsed.data.claimId }
+    : undefined;
+
   const provider = getPaymentProvider();
   const result = await provider.createOrder({
     amountKzt: parsed.data.amountKzt,
     userId: session.user.id,
     brandId: parsed.data.brandId,
     idempotencyKey,
+    metadata: orderMetadata,
   });
 
   const order = await prisma.paymentOrder.create({
@@ -58,6 +64,7 @@ export async function POST(request: NextRequest) {
       paymentProvider: provider.name,
       providerOrderId: result.providerOrderId,
       idempotencyKey,
+      metadata: orderMetadata,
     },
   });
 

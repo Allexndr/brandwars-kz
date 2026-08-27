@@ -12,6 +12,9 @@ type ModerationCase = {
     websiteUrl: string;
     bidAmountKzt: number;
     contactEmail: string;
+    categoryName?: string;
+    isPaid?: boolean;
+    paymentStatus?: string;
   };
 };
 
@@ -50,11 +53,25 @@ export default function AdminModerationPage() {
       ) : (
         <ul className="space-y-4">
           {cases.map((c) => (
-            <li key={c.id} className="surface-card">
-              <p className="font-semibold text-ink">{c.brandClaim.brandName}</p>
-              <p className="text-sm text-muted">{c.brandClaim.websiteUrl}</p>
+            <li key={c.id} className="surface-card space-y-2">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="font-semibold text-ink">{c.brandClaim.brandName}</p>
+                  <p className="text-sm text-muted">{c.brandClaim.websiteUrl}</p>
+                </div>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                    c.brandClaim.isPaid
+                      ? "bg-emerald-100 text-emerald-800"
+                      : "bg-amber-100 text-amber-800"
+                  }`}
+                >
+                  {c.brandClaim.isPaid ? "Оплачено" : "Не оплачено"}
+                </span>
+              </div>
               <p className="text-sm text-ink">
-                {c.brandClaim.bidAmountKzt} ₸ · {c.brandClaim.contactEmail}
+                {c.brandClaim.categoryName ? `${c.brandClaim.categoryName} · ` : ""}
+                {c.brandClaim.bidAmountKzt.toLocaleString("ru-KZ")} ₸ · {c.brandClaim.contactEmail}
               </p>
               <div className="mt-3 flex gap-2">
                 <button

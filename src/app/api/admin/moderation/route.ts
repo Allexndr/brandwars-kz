@@ -20,5 +20,38 @@ export async function GET() {
     orderBy: { createdAt: "asc" },
   });
 
-  return NextResponse.json({ cases });
+  const categories = await prisma.category.findMany();
+  const categoryMap = Object.fromEntries(categories.map((c) => [c.id, c]));
+
+  const claimIds = cases.map((c) => c.brandClaim.id);
+  const idempotencyKeys = claimIds.map((id) => `claim_${id}`);
+
+  const paymentOrders = await prisma.paymentOrder.findMany({
+    where: { idempotencyKey: { in: idempotencyKeys } },
+  });
+  const paymentMap = Object.fromEntries(
+    paymentOrders.map((p) => [p.idempotencyKey.replace("claim_", ""), p]),
+  );
+
+  const enrichedCases = cases.map((c) => {
+    const claim = c.brandClaim;
+    const payment = paymentMap[claim.id];
+    const category = categoryMap[claim.categoryId];
+    const isPaid =
+      (claim.metadata as Record<string, unknown> | null)?.paid === true ||
+      payment?.status === "PAID";
+
+    return {
+      ...c,
+      brandClaim: {
+        ...claim,
+        categoryName: category?.continentRu ?? category?.nameRu ?? claim.categoryId,
+        categorySlug: category?.slug,
+        isPaid,
+        paymentStatus: payment?.status ?? (isPaid ? "PAID" : "UNPAID"),
+      },
+    };
+  });
+
+  return NextResponse.json({ cases: enrichedCases });
 }
