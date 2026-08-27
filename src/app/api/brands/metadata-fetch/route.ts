@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { fetchUrlMetadata } from "@/lib/metadata-fetch";
+import { normalizeWebsiteUrl } from "@/lib/normalize-url";
+import { formatApiError } from "@/lib/format-api-error";
 
 export const dynamic = "force-dynamic";
 
 const schema = z.object({
-  url: z.string().url(),
+  url: z
+    .string()
+    .min(3)
+    .transform(normalizeWebsiteUrl)
+    .pipe(z.string().url("Укажите корректный URL, например https://murdasoft.kz")),
 });
 
 export async function POST(request: NextRequest) {
@@ -18,7 +24,10 @@ export async function POST(request: NextRequest) {
 
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    return NextResponse.json(
+      { error: formatApiError(parsed.error.flatten(), "Некорректная ссылка") },
+      { status: 400 },
+    );
   }
 
   try {

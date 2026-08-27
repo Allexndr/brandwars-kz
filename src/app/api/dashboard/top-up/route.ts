@@ -27,7 +27,10 @@ export async function POST(request: NextRequest) {
 
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    return NextResponse.json(
+      { error: "Проверьте сумму пополнения" },
+      { status: 400 },
+    );
   }
 
   const idempotencyKey =
@@ -38,32 +41,44 @@ export async function POST(request: NextRequest) {
     where: { idempotencyKey },
   });
   if (existing) {
-    return NextResponse.json({ order: existing });
+    return NextResponse.json({
+      order: existing,
+      paymentUrl: undefined,
+      testMode: process.env.PAYMENT_TEST_MODE === "true",
+    });
   }
 
-  const provider = getPaymentProvider();
-  const result = await provider.createOrder({
-    amountKzt: parsed.data.amountKzt,
-    userId: session.user.id,
-    brandId: parsed.data.brandId,
-    idempotencyKey,
-  });
-
-  const order = await prisma.paymentOrder.create({
-    data: {
+  try {
+    const provider = getPaymentProvider();
+    const result = await provider.createOrder({
+      amountKzt: parsed.data.amountKzt,
       userId: session.user.id,
       brandId: parsed.data.brandId,
-      amountKzt: parsed.data.amountKzt,
-      status: "PENDING",
-      paymentProvider: provider.name,
-      providerOrderId: result.providerOrderId,
       idempotencyKey,
-    },
-  });
+    });
 
-  return NextResponse.json({
-    order,
-    paymentUrl: result.paymentUrl,
-    testMode: process.env.PAYMENT_TEST_MODE === "true",
-  });
+    const order = await prisma.paymentOrder.create({
+      data: {
+        userId: session.user.id,
+        brandId: parsed.data.brandId,
+        amountKzt: parsed.data.amountKzt,
+        status: "PENDING",
+        paymentProvider: provider.name,
+        providerOrderId: result.providerOrderId,
+        idempotencyKey,
+      },
+    });
+
+    return NextResponse.json({
+      order,
+      paymentUrl: result.paymentUrl,
+      testMode: provider.name === "test" || process.env.PAYMENT_TEST_MODE === "true",
+      provider: provider.name,
+    });
+  } catch (err) {
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Payment create failed" },
+      { status: 502 },
+    );
+  }
 }

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { signIn, useSession } from "next-auth/react";
+import { formatApiError } from "@/lib/format-api-error";
+import { normalizeWebsiteUrl } from "@/lib/normalize-url";
 
 const CATEGORIES = [
   { slug: "travel", label: "Travelia", min: 2000 },
@@ -44,13 +46,15 @@ export function ClaimWizard() {
     setLoading(true);
     setError(null);
     try {
+      const normalized = normalizeWebsiteUrl(url);
       const res = await fetch("/api/brands/metadata-fetch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url: normalized }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Fetch failed");
+      if (!res.ok) throw new Error(formatApiError(data.error, "Не удалось загрузить сайт"));
+      setUrl(normalized);
       setMetadata(data);
       if (data.title) setBrandName(data.title);
       setStep(2);
@@ -74,7 +78,7 @@ export function ClaimWizard() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          websiteUrl: url,
+          websiteUrl: normalizeWebsiteUrl(url),
           brandName,
           categorySlug,
           contactEmail,
@@ -83,7 +87,9 @@ export function ClaimWizard() {
         }),
       });
       const claimData = await claimRes.json();
-      if (!claimRes.ok) throw new Error(JSON.stringify(claimData.error));
+      if (!claimRes.ok) {
+        throw new Error(formatApiError(claimData.error, "Не удалось создать заявку"));
+      }
 
       const payRes = await fetch("/api/dashboard/top-up", {
         method: "POST",
@@ -94,7 +100,15 @@ export function ClaimWizard() {
         }),
       });
       const payData = await payRes.json();
-      if (!payRes.ok) throw new Error(JSON.stringify(payData.error));
+      if (!payRes.ok) {
+        throw new Error(formatApiError(payData.error, "Не удалось создать оплату"));
+      }
+
+      // Lemon Squeezy / hosted checkout — Card + Google Pay
+      if (payData.paymentUrl && !payData.testMode) {
+        window.location.href = payData.paymentUrl;
+        return;
+      }
 
       if (payData.testMode && payData.order?.providerOrderId) {
         const confirmRes = await fetch("/api/payments/confirm-test", {
@@ -105,7 +119,7 @@ export function ClaimWizard() {
             orderId: payData.order.id,
           }),
         });
-        if (!confirmRes.ok) throw new Error("Payment confirm failed");
+        if (!confirmRes.ok) throw new Error("Не удалось подтвердить тестовую оплату");
       }
 
       setDone(true);
@@ -134,7 +148,6 @@ export function ClaimWizard() {
 
   return (
     <div className="surface-card">
-      {/* Progress: 3 steps only */}
       <div className="mb-8 flex items-center gap-3">
         {[
           { n: 1, label: t("flowLink") },
@@ -162,7 +175,8 @@ export function ClaimWizard() {
           <h2 className="font-display text-xl font-semibold">{t("step1")}</h2>
           <p className="text-sm text-muted">{t("step1hint")}</p>
           <input
-            type="url"
+            type="text"
+            inputMode="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder={t("urlPlaceholder")}
@@ -269,7 +283,9 @@ export function ClaimWizard() {
               </dd>
             </div>
           </dl>
-          <p className="text-xs text-muted">{t("refundNote")}</p>
+          <p className="text-xs text-muted">
+            {t("refundNote")} Оплата через Lemon Squeezy: карта, Google Pay, Apple Pay, PayPal.
+          </p>
 
           {status === "loading" ? (
             <p className="text-sm text-muted">{tc("loading")}</p>
@@ -278,9 +294,7 @@ export function ClaimWizard() {
               <p className="text-sm text-muted">{t("loginRequired")}</p>
               <button
                 type="button"
-                onClick={() =>
-                  signIn(undefined, { callbackUrl: "/claim-brand" })
-                }
+                onClick={() => signIn(undefined, { callbackUrl: "/ru/claim-brand" })}
                 className="btn-primary w-full"
               >
                 {t("loginToPay")}
@@ -297,7 +311,9 @@ export function ClaimWizard() {
                 onClick={submitAndPay}
                 className="btn-primary flex-1"
               >
-                {loading ? tc("loading") : t("payCta", { amount: bidAmount.toLocaleString("ru-KZ") })}
+                {loading
+                  ? tc("loading")
+                  : t("payCta", { amount: bidAmount.toLocaleString("ru-KZ") })}
               </button>
             </div>
           )}

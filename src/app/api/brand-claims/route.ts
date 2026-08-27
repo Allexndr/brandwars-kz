@@ -4,11 +4,17 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/utils";
+import { normalizeWebsiteUrl } from "@/lib/normalize-url";
+import { formatApiError } from "@/lib/format-api-error";
 
 export const dynamic = "force-dynamic";
 
 const claimSchema = z.object({
-  websiteUrl: z.string().url(),
+  websiteUrl: z
+    .string()
+    .min(3)
+    .transform(normalizeWebsiteUrl)
+    .pipe(z.string().url()),
   brandName: z.string().min(2).max(120),
   categorySlug: z.string().min(1),
   contactEmail: z.string().email(),
@@ -31,7 +37,10 @@ export async function POST(request: NextRequest) {
 
   const parsed = claimSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    return NextResponse.json(
+      { error: formatApiError(parsed.error.flatten(), "Проверьте поля заявки") },
+      { status: 400 },
+    );
   }
 
   const data = parsed.data;

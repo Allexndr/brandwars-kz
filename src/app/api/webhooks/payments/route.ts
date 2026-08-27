@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 async function markOrderPaid(orderId: string, providerOrderId: string) {
   const order = await prisma.paymentOrder.findFirst({
     where: {
-      OR: [{ id: orderId }, { providerOrderId }],
+      OR: [{ id: orderId }, { providerOrderId }, { idempotencyKey: orderId }],
     },
   });
 
@@ -62,11 +62,17 @@ async function markOrderPaid(orderId: string, providerOrderId: string) {
 }
 
 export async function POST(request: NextRequest) {
+  const raw = await request.text();
   let body: unknown;
   try {
-    body = await request.json();
+    body = JSON.parse(raw);
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  // Attach raw for Lemon HMAC verification
+  if (body && typeof body === "object") {
+    (body as { _raw?: string })._raw = raw;
   }
 
   const provider = getPaymentProvider();
