@@ -1,5 +1,11 @@
 # BrandWars.kz
 
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![Gamification](https://img.shields.io/badge/Interactive-2D--Map-orange)]()
+
+
+
 Живая игровая рекламная платформа для брендов Казахстана — браузерная 2D-карта с сезонными рейтингами, территориями и «туалетным» юмором в безопасной форме.
 
 ## Документация
