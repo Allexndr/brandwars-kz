@@ -1,0 +1,1 @@
+export { CategoryMap } from "./MapCanvas";

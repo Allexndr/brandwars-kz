@@ -1,0 +1,980 @@
+<title>Планета брендов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root {
+    --paper:      #F4F6F3;
+    --paper-2:    #EAEEE9;
+    --paper-3:    #E0E5DF;
+    --ink:        #1C2621;
+    --ink-soft:   #3C4A43;
+    --neutral:    #6B7A72;
+    --neutral-2:  #8C9A92;
+    --rule:       #CBD4CC;
+    --land:       #0E7C66;
+    --land-soft:  #D8E8E1;
+    --contest:    #C2571A;
+    --contest-soft:#F5E2D3;
+    --brass:      #8A6D1F;
+    --brass-soft: #EFE7CF;
+    --shadow:     rgba(28,38,33,.07);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:      #131816;
+      --paper-2:    #1A211D;
+      --paper-3:    #222A25;
+      --ink:        #E6EBE7;
+      --ink-soft:   #BCC7C0;
+      --neutral:    #8FA097;
+      --neutral-2:  #74847B;
+      --rule:       #2E3833;
+      --land:       #3FBF9E;
+      --land-soft:  #17332B;
+      --contest:    #E8853F;
+      --contest-soft:#33231A;
+      --brass:      #C9A94F;
+      --brass-soft: #2A2417;
+      --shadow:     rgba(0,0,0,.32);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:      #131816;
+    --paper-2:    #1A211D;
+    --paper-3:    #222A25;
+    --ink:        #E6EBE7;
+    --ink-soft:   #BCC7C0;
+    --neutral:    #8FA097;
+    --neutral-2:  #74847B;
+    --rule:       #2E3833;
+    --land:       #3FBF9E;
+    --land-soft:  #17332B;
+    --contest:    #E8853F;
+    --contest-soft:#33231A;
+    --brass:      #C9A94F;
+    --brass-soft: #2A2417;
+    --shadow:     rgba(0,0,0,.32);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Golos Text", "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.62;
+    margin: 0;
+    padding: 0 20px 120px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1080px; margin: 0 auto; }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    padding: 72px 0 40px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--neutral);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+  }
+
+  h1 {
+    font-family: "Unbounded", "Golos Text", sans-serif;
+    font-weight: 700;
+    font-size: clamp(38px, 6.4vw, 68px);
+    line-height: 1.02;
+    letter-spacing: -.035em;
+    margin: 0;
+    text-wrap: balance;
+    max-width: 20ch;
+  }
+
+  .standfirst {
+    font-size: clamp(18px, 2.1vw, 21px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin: 0;
+  }
+
+  /* ---------- thesis ---------- */
+
+  .thesis {
+    margin: 48px 0 0;
+    padding: 34px 36px;
+    background: var(--paper-2);
+    border-left: 3px solid var(--land);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .thesis h2 {
+    font-family: "Unbounded", sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -.01em;
+    text-transform: none;
+    margin: 0;
+    color: var(--land);
+  }
+
+  .thesis p { margin: 0; max-width: 66ch; }
+
+  .numbers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 8px 0 0;
+  }
+
+  .num {
+    background: var(--paper);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .num b {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 21px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.02em;
+    line-height: 1.1;
+  }
+
+  .num span {
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--neutral);
+  }
+
+  .num.dead b { color: var(--contest); }
+  .num.live b { color: var(--land); }
+
+  /* ---------- sections with coordinate rail ---------- */
+
+  section.chapter {
+    display: grid;
+    grid-template-columns: 74px minmax(0, 1fr);
+    gap: 0 28px;
+    padding: 62px 0 0;
+  }
+
+  .rail {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    letter-spacing: .06em;
+    color: var(--neutral-2);
+    padding-top: 12px;
+    position: sticky;
+    top: 22px;
+    align-self: start;
+  }
+
+  .rail .tier {
+    display: block;
+    margin-top: 8px;
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--neutral-2);
+    line-height: 1.35;
+  }
+
+  .body { min-width: 0; }
+
+  h2.head {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 500;
+    font-size: clamp(25px, 3.1vw, 33px);
+    line-height: 1.16;
+    letter-spacing: -.03em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+    max-width: 26ch;
+  }
+
+  h3 {
+    font-family: "Golos Text", sans-serif;
+    font-weight: 600;
+    font-size: 18.5px;
+    line-height: 1.35;
+    margin: 34px 0 10px;
+    letter-spacing: -.01em;
+  }
+
+  p { margin: 0 0 16px; max-width: 68ch; }
+
+  .body > p:last-child { margin-bottom: 0; }
+
+  a { color: var(--land); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible { outline: 2px solid var(--land); outline-offset: 3px; border-radius: 2px; }
+
+  strong { font-weight: 600; }
+
+  code {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: .875em;
+    background: var(--paper-3);
+    padding: .12em .38em;
+    border-radius: 3px;
+  }
+
+  ul, ol { max-width: 68ch; padding-left: 22px; margin: 0 0 16px; }
+  li { margin-bottom: 9px; }
+  li::marker { color: var(--neutral-2); }
+
+  /* ---------- verdict / flag callouts ---------- */
+
+  .flag {
+    margin: 26px 0;
+    padding: 20px 24px;
+    border-left: 3px solid var(--contest);
+    background: var(--contest-soft);
+    max-width: 68ch;
+  }
+
+  .flag.good { border-left-color: var(--land); background: var(--land-soft); }
+  .flag.money { border-left-color: var(--brass); background: var(--brass-soft); }
+
+  .flag .label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+    color: var(--contest);
+  }
+
+  .flag.good .label { color: var(--land); }
+  .flag.money .label { color: var(--brass); }
+
+  .flag p { margin: 0; max-width: none; }
+  .flag p + p { margin-top: 11px; }
+
+  /* ---------- figures ---------- */
+
+  figure {
+    margin: 38px 0;
+    padding: 0;
+  }
+
+  .figbox {
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    padding: 26px 24px 20px;
+    overflow-x: auto;
+  }
+
+  figure svg { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+
+  figcaption {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--neutral);
+    margin-top: 12px;
+    max-width: 72ch;
+  }
+
+  /* ---------- tables ---------- */
+
+  .tablewrap { overflow-x: auto; margin: 26px 0; border: 1px solid var(--rule); }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 15px;
+    min-width: 520px;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 11px 15px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+
+  th {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--neutral);
+    font-weight: 500;
+    background: var(--paper-3);
+    white-space: nowrap;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  td.n { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .pill {
+    display: inline-block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .pill.hi { background: var(--land); color: var(--paper); }
+  .pill.mid { background: var(--brass); color: var(--paper); }
+  .pill.risk { background: var(--contest); color: var(--paper); }
+
+  /* ---------- ranked idea list ---------- */
+
+  .ideas { display: flex; flex-direction: column; gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 26px 0; }
+
+  .idea { background: var(--paper); padding: 20px 22px; display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 0 16px; }
+
+  .idea .rank {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    color: var(--neutral-2);
+    font-variant-numeric: tabular-nums;
+    padding-top: 2px;
+  }
+
+  .idea h4 {
+    margin: 0 0 6px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .idea p { margin: 0; font-size: 15.5px; color: var(--ink-soft); max-width: 64ch; }
+
+  /* ---------- closing ---------- */
+
+  .closing {
+    margin-top: 72px;
+    padding-top: 40px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .qlist { counter-reset: q; list-style: none; padding: 0; max-width: 70ch; }
+  .qlist li {
+    counter-increment: q;
+    padding-left: 40px;
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .qlist li::before {
+    content: counter(q);
+    position: absolute;
+    left: 0;
+    top: 1px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--contest);
+    border: 1px solid var(--rule);
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+  }
+
+  .footnote {
+    font-size: 13.5px;
+    color: var(--neutral);
+    max-width: 72ch;
+    margin-top: 40px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (max-width: 720px) {
+    body { font-size: 16.5px; padding: 0 16px 80px; }
+    section.chapter { grid-template-columns: 1fr; gap: 0; padding-top: 48px; }
+    .rail { position: static; padding: 0 0 14px; display: flex; gap: 14px; align-items: baseline; }
+    .rail .tier { margin: 0; }
+    .thesis { padding: 26px 22px; }
+    .masthead { padding: 48px 0 32px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">
+      <span>BrandWars.kz</span>
+      <span>Анализ направления v2</span>
+      <span>27.08.2026</span>
+    </div>
+    <h1>Планета брендов</h1>
+    <p class="standfirst">Что добавить в игровую планету категорий, что в ней сейчас структурно сломано, и какие решения превращают вирусный всплеск в бизнес, который живёт дольше полугода.</p>
+  </header>
+
+  <div class="thesis">
+    <h2>Главный вывод, из которого следует всё остальное</h2>
+    <p>Жанр, в котором вы работаете, умирает по одному и тому же сценарию. Разовая покупка даёт разовую выручку, новизна выгорает за 6–12 месяцев, и клоны никогда не повторяют результат оригинала.</p>
+    <div class="numbers">
+      <div class="num live"><b>$1 037 100</b><span>Million Dollar Homepage за 5 месяцев, 2005–06</span></div>
+      <div class="num dead"><b>$9,60</b><span>Pixels4all — клон той же механики</span></div>
+      <div class="num dead"><b>$153 000</b><span>Pixelotto — сиквел <em>того же автора</em>, −85%</span></div>
+      <div class="num live"><b>1,1 млн / 2 дня</b><span>Outbid.lol, август 2026: $21 000 за первые 24 ч</span></div>
+    </div>
+    <p>Ваши собственные 40 000 ₸ за 24 часа на topbrands.kz — это верхняя часть той же кривой. Поэтому задача формулируется не как «добавить фич», а как <strong>встроить в планету повторяющуюся выручку и причину возвращаться</strong>. Всё, что ниже, отсортировано по этому критерию, а не по красоте идеи.</p>
+  </div>
+
+  <!-- ============ 1 ============ -->
+  <section class="chapter">
+    <div class="rail">01<span class="tier">Блокирует<br>остальное</span></div>
+    <div class="body">
+      <h2 class="head">В экономике сейчас прямое противоречие</h2>
+
+      <p>В коде территория считается как <em>доля</em>: <code>territoryShare = √power / Σ√power</code> по всем брендам категории (<code>src/lib/territory.ts</code>). Сумма всех долей всегда равна единице.</p>
+
+      <p>А то, что вы описываете сейчас — «материки ограниченного размера», «клетка стоит 500 ₸ и она становится больше» — это <em>абсолютное</em> владение: конкретная клетка, конкретный объект, конкретный владелец.</p>
+
+      <p>Эти две модели несовместимы, и выбор между ними определяет, будет ли работать конверсия. При долевой модели бренд платит 500 ₸, одновременно платят ещё двое — и его территория <strong>не растёт вообще</strong>, потому что знаменатель вырос вместе с числителем. Человек заплатил и не увидел результата. Это убивает главный цикл продукта: заплатил → увидел → захотел ещё.</p>
+
+      <figure>
+        <div class="figbox">
+          <svg viewBox="0 0 720 300" role="img" aria-label="Сравнение долевой модели и клеточной: при доле покупка размывается и меняет всех, при клетках покупка меняет один конкретный объект">
+            <defs>
+              <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+
+            <!-- LEFT: share model -->
+            <text x="14" y="18" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".55">СЕЙЧАС В КОДЕ — ДОЛЯ</text>
+
+            <!-- before circle -->
+            <circle cx="86" cy="98" r="46" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".45"/>
+            <path d="M 86 98 L 86 52 A 46 46 0 0 1 125 121 Z" fill="currentColor" opacity=".26"/>
+            <path d="M 86 98 L 125 121 A 46 46 0 0 1 55 138 Z" fill="currentColor" opacity=".15"/>
+            <path d="M 86 98 L 55 138 A 46 46 0 0 1 86 52 Z" fill="#0E7C66" opacity=".55"/>
+            <text x="86" y="166" text-anchor="middle" font-size="11.5" fill="currentColor" opacity=".7">A 50 · B 30 · C 20</text>
+
+            <line x1="146" y1="98" x2="196" y2="98" stroke="#C2571A" stroke-width="1.4" marker-end="url(#ar)" color="#C2571A"/>
+            <text x="171" y="90" text-anchor="middle" font-size="11" fill="#C2571A">C +500 ₸</text>
+            <text x="171" y="114" text-anchor="middle" font-size="10" fill="currentColor" opacity=".55">A и B тоже</text>
+            <text x="171" y="126" text-anchor="middle" font-size="10" fill="currentColor" opacity=".55">платят</text>
+
+            <!-- after circle -->
+            <circle cx="256" cy="98" r="46" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".45"/>
+            <path d="M 256 98 L 256 52 A 46 46 0 0 1 297 118 Z" fill="currentColor" opacity=".26"/>
+            <path d="M 256 98 L 297 118 A 46 46 0 0 1 227 139 Z" fill="currentColor" opacity=".15"/>
+            <path d="M 256 98 L 227 139 A 46 46 0 0 1 256 52 Z" fill="#0E7C66" opacity=".55"/>
+            <text x="256" y="166" text-anchor="middle" font-size="11.5" fill="currentColor" opacity=".7">A 48 · B 29 · C 23</text>
+
+            <text x="170" y="206" text-anchor="middle" font-size="12" fill="#C2571A">прирост размылся</text>
+            <text x="170" y="224" text-anchor="middle" font-size="11" fill="currentColor" opacity=".6">чужие территории меняются</text>
+            <text x="170" y="240" text-anchor="middle" font-size="11" fill="currentColor" opacity=".6">без действий владельца</text>
+            <text x="170" y="264" text-anchor="middle" font-size="11" fill="currentColor" opacity=".6">нечего показать в сторис</text>
+
+            <!-- divider -->
+            <line x1="372" y1="8" x2="372" y2="286" stroke="currentColor" stroke-width="1" opacity=".2" stroke-dasharray="3 4"/>
+
+            <!-- RIGHT: cell model -->
+            <text x="404" y="18" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".55">КЛЕТКИ — АБСОЛЮТНОЕ ВЛАДЕНИЕ</text>
+
+            <g transform="translate(404,44)">
+              <!-- 7x5 grid -->
+              <g stroke="currentColor" stroke-width="1" opacity=".3" fill="none">
+                <rect x="0" y="0" width="38" height="26"/><rect x="40" y="0" width="38" height="26"/><rect x="80" y="0" width="38" height="26"/><rect x="120" y="0" width="38" height="26"/><rect x="160" y="0" width="38" height="26"/><rect x="200" y="0" width="38" height="26"/><rect x="240" y="0" width="38" height="26"/>
+                <rect x="0" y="28" width="38" height="26"/><rect x="40" y="28" width="38" height="26"/><rect x="80" y="28" width="38" height="26"/><rect x="120" y="28" width="38" height="26"/><rect x="160" y="28" width="38" height="26"/><rect x="200" y="28" width="38" height="26"/><rect x="240" y="28" width="38" height="26"/>
+                <rect x="0" y="56" width="38" height="26"/><rect x="40" y="56" width="38" height="26"/><rect x="80" y="56" width="38" height="26"/><rect x="120" y="56" width="38" height="26"/><rect x="160" y="56" width="38" height="26"/><rect x="200" y="56" width="38" height="26"/><rect x="240" y="56" width="38" height="26"/>
+                <rect x="0" y="84" width="38" height="26"/><rect x="40" y="84" width="38" height="26"/><rect x="80" y="84" width="38" height="26"/><rect x="120" y="84" width="38" height="26"/><rect x="160" y="84" width="38" height="26"/><rect x="200" y="84" width="38" height="26"/><rect x="240" y="84" width="38" height="26"/>
+              </g>
+              <!-- owned A -->
+              <rect x="0" y="0" width="38" height="26" fill="currentColor" opacity=".26"/><rect x="40" y="0" width="38" height="26" fill="currentColor" opacity=".26"/><rect x="0" y="28" width="38" height="26" fill="currentColor" opacity=".26"/>
+              <!-- owned B -->
+              <rect x="200" y="56" width="38" height="26" fill="currentColor" opacity=".14"/><rect x="240" y="56" width="38" height="26" fill="currentColor" opacity=".14"/><rect x="240" y="84" width="38" height="26" fill="currentColor" opacity=".14"/>
+              <!-- owned C -->
+              <rect x="80" y="56" width="38" height="26" fill="#0E7C66" opacity=".5"/><rect x="120" y="56" width="38" height="26" fill="#0E7C66" opacity=".5"/>
+              <!-- newly claimed -->
+              <rect x="120" y="84" width="38" height="26" fill="#C2571A" opacity=".75"/>
+              <rect x="120" y="84" width="38" height="26" fill="none" stroke="#C2571A" stroke-width="2"/>
+            </g>
+
+            <line x1="596" y1="176" x2="560" y2="152" stroke="#C2571A" stroke-width="1.4" marker-end="url(#ar)" color="#C2571A"/>
+            <text x="600" y="180" font-size="11" fill="#C2571A">C купил ЭТУ клетку</text>
+
+            <text x="530" y="216" text-anchor="middle" font-size="12" fill="#0E7C66">прирост виден сразу</text>
+            <text x="530" y="234" text-anchor="middle" font-size="11" fill="currentColor" opacity=".6">чужие территории не тронуты</text>
+            <text x="530" y="250" text-anchor="middle" font-size="11" fill="currentColor" opacity=".6">дефицит реальный: клеток конечное число</text>
+            <text x="530" y="266" text-anchor="middle" font-size="11" fill="currentColor" opacity=".6">есть конкретный объект спора</text>
+          </svg>
+        </div>
+        <figcaption>Одна и та же покупка в двух моделях. Слева — то, что в коде сейчас: платят трое, доли пересчитываются, прирост C почти не читается, а territории A и B меняются без их участия. Справа — клетки: покупка создаёт конкретный видимый объект, который затем можно оспорить.</figcaption>
+      </figure>
+
+      <div class="flag">
+        <span class="label">Решение, которое надо принять первым</span>
+        <p>Я бы выбрал <strong>клетки</strong>. Не только из-за видимости покупки: дефицит превращает «хочу быть первым» (торг с числом) в «хочу вот эту клетку» (торг с конкретным соперником за конкретный объект). Второе монетизируется гораздо лучше, потому что платят <em>обе</em> стороны.</p>
+        <p>Учтите миграцию: у вас уже есть бренды, заплатившие при долевой формуле. Переход требует правила пересчёта — например, конвертировать накопленный <code>battlePower</code> в стартовое число клеток по фиксированному курсу.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section class="chapter">
+    <div class="rail">02<span class="tier">Повторяющаяся<br>выручка</span></div>
+    <div class="body">
+      <h2 class="head">Три слоя земли: дефицит без блокировки новичков</h2>
+
+      <p>У чистого дефицита есть смертельный изъян: материк заполняется, и дальше либо новичкам некуда заходить (выручка упирается в потолок), либо вы бесконечно расширяете карту и дефицит исчезает. Разрешается это тремя слоями с разными правилами.</p>
+
+      <figure>
+        <div class="figbox">
+          <svg viewBox="0 0 700 330" role="img" aria-label="Три слоя земли: неизменяемое ядро у столицы, расширяющийся фронтир, и цикл распада неподдерживаемых клеток в нейтральные земли">
+            <defs>
+              <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+
+            <!-- frontier ring -->
+            <circle cx="230" cy="152" r="126" fill="currentColor" opacity=".05"/>
+            <circle cx="230" cy="152" r="126" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".3" stroke-dasharray="5 5"/>
+            <!-- core ring -->
+            <circle cx="230" cy="152" r="76" fill="#0E7C66" opacity=".1"/>
+            <circle cx="230" cy="152" r="76" fill="none" stroke="#0E7C66" stroke-width="1.5" opacity=".6"/>
+            <!-- capital -->
+            <circle cx="230" cy="152" r="20" fill="#8A6D1F" opacity=".8"/>
+            <text x="230" y="156" text-anchor="middle" font-size="10" font-family="IBM Plex Mono, monospace" fill="#F4F6F3">СТОЛ</text>
+
+            <!-- core cells -->
+            <g fill="#0E7C66" opacity=".5">
+              <rect x="196" y="98" width="18" height="14"/><rect x="218" y="94" width="18" height="14"/><rect x="248" y="102" width="18" height="14"/>
+              <rect x="176" y="140" width="18" height="14"/><rect x="272" y="136" width="18" height="14"/>
+              <rect x="192" y="188" width="18" height="14"/><rect x="240" y="192" width="18" height="14"/>
+            </g>
+            <!-- frontier cells -->
+            <g fill="currentColor" opacity=".2">
+              <rect x="150" y="70" width="18" height="14"/><rect x="300" y="80" width="18" height="14"/>
+              <rect x="122" y="176" width="18" height="14"/><rect x="326" y="170" width="18" height="14"/>
+              <rect x="168" y="236" width="18" height="14"/><rect x="282" y="240" width="18" height="14"/>
+            </g>
+
+            <text x="230" y="60" text-anchor="middle" font-size="11.5" fill="#0E7C66" font-weight="600">ЯДРО — не расширяется никогда</text>
+            <text x="230" y="300" text-anchor="middle" font-size="11.5" fill="currentColor" opacity=".6">ФРОНТИР — расширяется кольцом при заполнении &gt;85%</text>
+
+            <!-- right column: decay loop -->
+            <line x1="376" y1="152" x2="424" y2="152" stroke="currentColor" stroke-width="1.3" opacity=".5" marker-end="url(#ar2)"/>
+
+            <rect x="432" y="64" width="238" height="60" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".4"/>
+            <text x="446" y="86" font-size="12" fill="currentColor">Клетка занята и поддержана</text>
+            <text x="446" y="106" font-size="11" fill="currentColor" opacity=".6">взнос в текущем сезоне есть</text>
+
+            <line x1="551" y1="124" x2="551" y2="156" stroke="#C2571A" stroke-width="1.3" marker-end="url(#ar2)" color="#C2571A"/>
+            <text x="562" y="145" font-size="10.5" fill="#C2571A">30 дней тишины</text>
+
+            <rect x="432" y="160" width="238" height="60" fill="var(--contest-soft)" stroke="#C2571A" stroke-width="1.2" opacity=".9"/>
+            <text x="446" y="182" font-size="12" fill="#C2571A">Клетка тускнеет</text>
+            <text x="446" y="202" font-size="11" fill="currentColor" opacity=".6">7 дней на возврат, уведомления</text>
+
+            <line x1="551" y1="220" x2="551" y2="252" stroke="currentColor" stroke-width="1.3" opacity=".5" marker-end="url(#ar2)"/>
+
+            <rect x="432" y="256" width="238" height="52" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".4" stroke-dasharray="4 4"/>
+            <text x="446" y="278" font-size="12" fill="currentColor">Возврат в нейтральные земли</text>
+            <text x="446" y="296" font-size="11" fill="currentColor" opacity=".6">ядро снова оспоримо</text>
+
+            <path d="M 670 282 Q 694 282 694 152 Q 694 94 670 94" fill="none" stroke="#0E7C66" stroke-width="1.3" opacity=".7" marker-end="url(#ar2)" color="#0E7C66"/>
+            <text x="686" y="196" font-size="10.5" fill="#0E7C66" transform="rotate(90 686 196)">цикл выручки</text>
+          </svg>
+        </div>
+        <figcaption>Ядро у столицы конечно и не растёт — там идут все войны. Фронтир расширяется кольцами, поэтому новичку всегда есть куда зайти, но на скучной окраине, откуда хочется двигаться внутрь. Распад неподдерживаемых клеток одновременно даёт повторяющуюся выручку и держит ядро вечно оспоримым.</figcaption>
+      </figure>
+
+      <h3>Почему распад — это главный механизм, а не жестокость</h3>
+
+      <p>Именно распад отвечает на кривую из вступления. Разовая покупка клетки = разовая выручка, и через три месяца карта заморожена: все хорошие клетки заняты теми, кто заплатил один раз в марте. Новичкам неинтересно, старым платить незачем, продукт мёртв при живом трафике.</p>
+
+      <p>Мягкая формулировка вместо «аренды»: клетка не отбирается, а <em>тускнеет без поддержки</em> — с предупреждением и окном возврата. Механически это подписка, эмоционально — «поддерживай свою территорию».</p>
+
+      <div class="flag money">
+        <span class="label">Ценообразование, которое стоит поменять</span>
+        <p>Плоские 500 ₸ за клетку — упущенная возможность. Клетка у столицы и клетка на дальнем фронтире не должны стоить одинаково: <strong>цена по градиенту от центра</strong> создаёт стратегию («копить на клетку у столицы или взять три на окраине»), а у вас появляется естественная верхняя ценовая полка без повышения входного порога. Вход остаётся 1000 ₸ — это правильно и это ваше конкурентное преимущество.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section class="chapter">
+    <div class="rail">03<span class="tier">Хайп<br>и возвраты</span></div>
+    <div class="body">
+      <h2 class="head">Окно противостояния: превратить сравнение чисел в зрелище</h2>
+
+      <p>Сейчас «война» — это письмо на почту о том, что чьё-то число стало больше (<code>notifyOvertakes</code> в <code>territory.ts</code>). Это topbrands с дополнительными шагами: событие мгновенное, невидимое и односторонее.</p>
+
+      <p>Механика, которая меняет всё: попытка занять чужую клетку не выполняется сразу, а <strong>открывает окно на несколько часов</strong>. Обе стороны могут докладываться, по закрытию клетку берёт тот, чья сумма выше.</p>
+
+      <figure>
+        <div class="figbox">
+          <svg viewBox="0 0 700 260" role="img" aria-label="Таймлайн окна противостояния: заявка открывает окно, обе стороны докладываются, по закрытию клетку берёт большая сумма, генерируется реплей">
+            <defs>
+              <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+
+            <!-- timeline axis -->
+            <line x1="40" y1="150" x2="646" y2="150" stroke="currentColor" stroke-width="1.4" opacity=".45" marker-end="url(#ar3)"/>
+
+            <!-- ticks -->
+            <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".6">
+              <line x1="80" y1="145" x2="80" y2="155" stroke="currentColor" stroke-width="1.2"/><text x="80" y="172" text-anchor="middle">T0</text>
+              <line x1="240" y1="145" x2="240" y2="155" stroke="currentColor" stroke-width="1.2"/><text x="240" y="172" text-anchor="middle">+2ч</text>
+              <line x1="400" y1="145" x2="400" y2="155" stroke="currentColor" stroke-width="1.2"/><text x="400" y="172" text-anchor="middle">+4ч</text>
+              <line x1="560" y1="145" x2="560" y2="155" stroke="currentColor" stroke-width="1.2"/><text x="560" y="172" text-anchor="middle">+6ч</text>
+            </g>
+
+            <!-- attacker bars (below) -->
+            <text x="40" y="212" font-size="11" fill="#C2571A">претендент</text>
+            <g fill="#C2571A" opacity=".7">
+              <rect x="80" y="188" width="26" height="14"/>
+              <rect x="240" y="188" width="26" height="14"/>
+              <rect x="470" y="188" width="26" height="14"/>
+              <rect x="540" y="188" width="26" height="14"/>
+            </g>
+            <text x="596" y="200" font-size="11" font-family="IBM Plex Mono, monospace" fill="#C2571A">4 800 ₸</text>
+
+            <!-- defender bars (above) -->
+            <text x="40" y="100" font-size="11" fill="#0E7C66">владелец</text>
+            <g fill="#0E7C66" opacity=".7">
+              <rect x="330" y="106" width="26" height="14"/>
+              <rect x="430" y="106" width="26" height="14"/>
+              <rect x="510" y="106" width="26" height="14"/>
+            </g>
+            <text x="596" y="118" font-size="11" font-family="IBM Plex Mono, monospace" fill="#0E7C66">5 200 ₸</text>
+
+            <!-- window bracket -->
+            <line x1="80" y1="60" x2="80" y2="140" stroke="currentColor" stroke-width="1" opacity=".3" stroke-dasharray="3 3"/>
+            <line x1="560" y1="60" x2="560" y2="140" stroke="#C2571A" stroke-width="1.2" opacity=".8"/>
+            <text x="86" y="52" font-size="11.5" fill="currentColor" opacity=".7">заявка на клетку</text>
+            <text x="554" y="52" text-anchor="end" font-size="11.5" fill="#C2571A" font-weight="600">закрытие: выше сумма — забирает</text>
+
+            <!-- outputs -->
+            <text x="80" y="240" font-size="11" fill="currentColor" opacity=".6">окно объявлено публично · счётчик на карте · обе стороны уведомлены</text>
+
+            <line x1="590" y1="140" x2="628" y2="96" stroke="#8A6D1F" stroke-width="1.3" marker-end="url(#ar3)" color="#8A6D1F"/>
+            <text x="636" y="88" font-size="10.5" fill="#8A6D1F">реплей</text>
+            <text x="636" y="102" font-size="10.5" fill="#8A6D1F">6–8 сек</text>
+          </svg>
+        </div>
+        <figcaption>Окно превращает мгновенный обгон в событие с часами, публичным счётчиком и двусторонними ставками. Здесь владелец удержал клетку 5 200 против 4 800 — и заплатили оба, вместо одного платежа при мгновенном обгоне.</figcaption>
+      </figure>
+
+      <p>Что это даёт, по пунктам:</p>
+
+      <ul>
+        <li><strong>Платят обе стороны.</strong> Мгновенный обгон — один платёж. Окно — торг, и защита обычно дороже атаки, потому что терять больнее, чем приобретать.</li>
+        <li><strong>Появляется время, в которое надо вернуться.</strong> «Осталось 2 часа» — это причина открыть сайт, которой у продукта сейчас нет вообще.</li>
+        <li><strong>Уведомление становится законным.</strong> «Вы под осадой, 4 часа» — срочно и честно. Сегодняшнее «вас обошли, доплатите» без окна выглядит как выпрашивание.</li>
+        <li><strong>Контент генерируется сам.</strong> У события есть начало, конец и результат — из этого автоматически собирается вертикальный ролик, чего не бывает у изменения числа.</li>
+      </ul>
+
+      <div class="flag good">
+        <span class="label">Усиление: прайм-тайм</span>
+        <p>Если окна закрываются в фиксированное время — например, ежедневно в 20:00 по Алматы — вы получаете <strong>назначенный эфир</strong>. Люди приходят смотреть развязку, как на трансляцию. Это же превращает планету в предмет, о котором можно вести Telegram-канал: у него есть расписание.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section class="chapter">
+    <div class="rail">04<span class="tier">Выручка ×<br>SEO</span></div>
+    <div class="body">
+      <h2 class="head">Вложенные масштабы: то, что даёт «кучу кучу запросов»</h2>
+
+      <p>Вы просили масштаб и много поискового трафика. Умножается это не количеством категорий, а <strong>вложенностью областей</strong>. Каждая область — это отдельный набор позиций «№1», которые можно продать, и отдельная страница, которую можно проиндексировать.</p>
+
+      <figure>
+        <div class="figbox">
+          <svg viewBox="0 0 660 250" role="img" aria-label="Вложенные масштабы: мир, страна, город умножаются на категории и дают тысячи продаваемых позиций номер один">
+            <defs>
+              <marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+
+            <rect x="20" y="20" width="300" height="210" fill="currentColor" opacity=".04" stroke="currentColor" stroke-width="1.2"/>
+            <text x="34" y="42" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".6">МИР</text>
+
+            <rect x="44" y="56" width="252" height="158" fill="currentColor" opacity=".05" stroke="currentColor" stroke-width="1.2"/>
+            <text x="58" y="78" font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" opacity=".6">КАЗАХСТАН</text>
+
+            <rect x="68" y="92" width="204" height="104" fill="#0E7C66" opacity=".1" stroke="#0E7C66" stroke-width="1.3"/>
+            <text x="82" y="114" font-family="IBM Plex Mono, monospace" font-size="11" fill="#0E7C66">АЛМАТЫ</text>
+            <text x="82" y="140" font-size="12.5" fill="currentColor">Травелия · №1 города</text>
+            <text x="82" y="162" font-size="11" fill="currentColor" opacity=".6">своя карта, свои клетки,</text>
+            <text x="82" y="178" font-size="11" fill="currentColor" opacity=".6">свои окна противостояния</text>
+
+            <line x1="330" y1="124" x2="374" y2="124" stroke="currentColor" stroke-width="1.3" opacity=".5" marker-end="url(#ar4)"/>
+
+            <g font-size="12.5">
+              <text x="390" y="60" fill="currentColor" opacity=".75">24 категории</text>
+              <text x="390" y="84" fill="currentColor" opacity=".75">× 1 мир</text>
+              <text x="390" y="108" fill="currentColor" opacity=".75">× 1 страна</text>
+              <text x="390" y="132" fill="currentColor" opacity=".75">× ~12 городов</text>
+              <line x1="386" y1="146" x2="586" y2="146" stroke="currentColor" stroke-width="1" opacity=".4"/>
+              <text x="390" y="172" font-family="IBM Plex Mono, monospace" font-size="19" fill="#0E7C66" font-weight="500">≈ 336</text>
+              <text x="390" y="192" font-size="11.5" fill="currentColor" opacity=".65">продаваемых позиций «№1»</text>
+              <text x="390" y="214" font-size="11.5" fill="#8A6D1F">и столько же</text>
+              <text x="390" y="230" font-size="11.5" fill="#8A6D1F">индексируемых страниц</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Одни и те же 24 категории в трёх областях дают не 24, а свыше 300 позиций первого места. Каждый добавленный город или страна умножает это ещё раз — и одновременно создаёт страницу с реальным меняющимся содержимым, а не сгенерированную пустышку.</figcaption>
+      </figure>
+
+      <p>Ключевая деталь для SEO: страницы вида <code>/category/travel/kz/almaty</code> работают только если содержимое настоящее — живой лидер, реальные клетки, история смен. Если города пустые, это классический programmatic-SEO мусор, который Google научился отбрасывать. Поэтому город открывается <em>после</em> того, как в нём набралось несколько брендов, а не заранее.</p>
+
+      <p>Это же и есть ответ на «мировой»: одна планета, категории — материки, страны и города — области внутри них. Глобальный лидер категории остаётся один (это ваш главный приз), но локальных первых мест становится много, и они дешёвые — то есть доступные малому бизнесу.</p>
+    </div>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section class="chapter">
+    <div class="rail">05<span class="tier">Что ещё<br>добавить</span></div>
+    <div class="body">
+      <h2 class="head">Идеи по убыванию отдачи</h2>
+
+      <p>Отсортировано по произведению «хайп × выручка × реализуемость». Первые четыре я считаю обязательными, дальше — по вкусу и ресурсу.</p>
+
+      <div class="ideas">
+        <div class="idea">
+          <div class="rank">01</div>
+          <div>
+            <h4>Альянсы брендов <span class="pill hi">новое для жанра</span></h4>
+            <p>Два бренда объединяют клетки и держат общую границу. Это не игровая мелочь, а <strong>готовый продукт для ко-маркетинга</strong>: кофейня и книжный магазин, турагентство и обменник. Агентства будут покупать такие связки для клиентов. Ни у topbrands, ни у Outbid, ни у Million Dollar Toilet этого нет — и это самое сильное отличие, которое вы можете себе позволить.</p>
+          </div>
+        </div>
+        <div class="idea">
+          <div class="rank">02</div>
+          <div>
+            <h4>Встраиваемый бейдж на сайт бренда <span class="pill hi">рост</span></h4>
+            <p>Скрипт-виджет «Мы №1 в Травелии» для сайта бренда. Бренд сам вешает его себе — вы получаете обратную ссылку (SEO) и его аудиторию, он получает подтверждение статуса. Это бесплатный цикл роста, который усиливается с каждым платящим брендом. Обязательно с живым обновлением: если бренд теряет позицию, бейдж меняется — и это повод доплатить.</p>
+          </div>
+        </div>
+        <div class="idea">
+          <div class="rank">03</div>
+          <div>
+            <h4>Чудеса материка <span class="pill mid">коллективные деньги</span></h4>
+            <p>Бренды категории совместно финансируют объект — маяк Травелии, обсерваторию Кодверса. Он появляется на карте, виден издалека, а наибольший вкладчик получает право имени. Проверенная в мобильных играх механика коллективной цели: социальное давление собирает больше, чем индивидуальные продажи, и создаёт поводы для новостей.</p>
+          </div>
+        </div>
+        <div class="idea">
+          <div class="rank">04</div>
+          <div>
+            <h4>Живая хроника планеты <span class="pill mid">SEO + шеринг</span></h4>
+            <p>Автогенерируемая лента событий: кто занял, кто удержал, где открылась земля. Каждая запись — отдельный URL с реальным содержимым и готовой OG-картинкой. Это одновременно контент-машина для SEO, материал для Telegram-канала и архив, к которому возвращаются.</p>
+          </div>
+        </div>
+        <div class="idea">
+          <div class="rank">05</div>
+          <div>
+            <h4>Персонажи и косметика <span class="pill mid">B2C-объём</span></h4>
+            <p>То, что вы описали — переименование и одежда персонажей — это ваш <strong>второй кошелёк</strong>: бренды платят за землю, зрители за косметику. Средний чек маленький, объём большой. Делайте наборы тематическими по категории (пилотская форма в Травелии), тогда косметика ещё и укрепляет мир. Про риски именования — в разделе 08.</p>
+          </div>
+        </div>
+        <div class="idea">
+          <div class="rank">06</div>
+          <div>
+            <h4>Прогнозы зрителей <span class="pill mid">возвраты</span></h4>
+            <p>«Кто удержит клетку в окне?» — бесплатный прогноз, награда косметикой. Даёт зрителю ставку в чужом конфликте, то есть причину вернуться к закрытию окна. <strong>Только бесплатный вход и только косметические награды</strong> — платный вход с призами уходит в регулирование азартных игр, см. 08.</p>
+          </div>
+        </div>
+        <div class="idea">
+          <div class="rank">07</div>
+          <div>
+            <h4>Неделя категории и спонсорство <span class="pill mid">крупный чек</span></h4>
+            <p>Материк получает festival-режим на неделю: своя обложка, свои события, титульный спонсор. Это первый ваш продукт с чеком в сотни тысяч тенге, а не в тысячи — и он продаётся агентствам, а не владельцам киосков.</p>
+          </div>
+        </div>
+        <div class="idea">
+          <div class="rank">08</div>
+          <div>
+            <h4>Сброс новых земель <span class="pill mid">дефицит по расписанию</span></h4>
+            <p>Остров или кольцо ядра открывается в объявленное время. Управляемый дефицит: вы сами создаёте моменты ажиотажа, когда выручка нужна, вместо того чтобы ждать органических конфликтов.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section class="chapter">
+    <div class="rail">06<span class="tier">Позициони-<br>рование</span></div>
+    <div class="body">
+      <h2 class="head">Куда девать туалет</h2>
+
+      <p>Вы возвращаетесь к этой идее в каждом обсуждении, и в мастер-документе она сведена к декоративному «Сливному проливу». Думаю, это половинчато в обе стороны: и хайпового хука нет, и осадок остался.</p>
+
+      <p>Честный расклад: туалетная рамка — это <strong>лучший виральный хук</strong> из всего, что у вас есть (у Million Dollar Toilet 40 млн просмотров именно на этом), и одновременно <strong>потолок для B2B</strong>. Банк, клиника и страховая не купят соседство с унитазом ни за какие деньги, а это ваши самые платёжеспособные категории.</p>
+
+      <div class="flag good">
+        <span class="label">Рекомендация</span>
+        <p>Не размывать по всей планете, а <strong>изолировать в один опт-ин материк</strong> — отдельная мемная зона со своими правилами, дешёвым входом и явно шутливым тоном. Бренд заходит туда осознанно, зная, что это шутка. Финополис и Виталис при этом остаются стерильными.</p>
+        <p>Так вы получаете вирусный повод для медиа («на планете брендов есть материк, куда компании заходят ради шутки») без потери премиальных категорий. И это единственная зона, где уместен весь тот юмор, который вы хотели.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7 ============ -->
+  <section class="chapter">
+    <div class="rail">07<span class="tier">Качество<br>сборки</span></div>
+    <div class="body">
+      <h2 class="head">Что мешает качеству в текущем коде</h2>
+
+      <p>Это найдено чтением репозитория, а не общими соображениями.</p>
+
+      <h3>Пересчёт категории не выдержит нагрузки</h3>
+      <p><code>recalculateCategory</code> проходит по всем территориям и для каждой вызывает <code>computeBrandBattlePower</code>, а это две агрегации в базу на бренд. При 200 брендах в категории — около 400 запросов <em>на каждый платёж</em>. Сейчас незаметно, на первом же хайпе ляжет. Нужен инкрементальный апдейт (изменился один бренд — пересчитать одну строку и сдвинуть ранги) плюс материализованный снапшот для чтения.</p>
+
+      <h3>Нет реального времени</h3>
+      <p>Мастер-документ предполагает обновление раз в 30–60 секунд. Для окон противостояния из раздела 03 этого мало: смысл окна в том, что счётчик живой. Vercel сейчас поддерживает WebSocket в функциях на Fluid Compute, так что отдельный realtime-сервис не обязателен — но под broadcast между инстансами всё равно нужен Redis pub/sub.</p>
+
+      <h3>Выбор клетки нельзя считать математикой</h3>
+      <p>Пока территория — это сглаженная доля, хит-тест по координатам работает. Как только появятся клетки, потребуется <strong>picking buffer</strong>: второй скрытый canvas, где каждая клетка залита цветом-идентификатором, и попадание определяется чтением одного пикселя. Иначе точный клик по клетке на сфере превратится в неточную геометрию с накопленной погрешностью проекции.</p>
+
+      <h3>Читаемость категорий — ваша собственная претензия</h3>
+      <p>Вы написали, что должно быть «понятно, что за категория, и куда попадёт бренд». Это две разные задачи:</p>
+      <ul>
+        <li><strong>Подписи на глобусе.</strong> 24 материка на сфере — это неизбежные коллизии подписей. Нужны уровни детализации: издалека только иконка и название материка, ближе — клетки и бренды. Плюс алгоритм расстановки подписей, отталкивающий их друг от друга.</li>
+        <li><strong>Предпросмотр участка до оплаты.</strong> Показать конкретную клетку, которую бренд получит, на настоящей карте, до платежа. Это прямой конверсионный элемент: человек видит, что покупает.</li>
+      </ul>
+
+      <h3>Кадры при 24 материках</h3>
+      <p>Сейчас рендер честно перебирает ячейки каждый кадр. С клетками и юнитами это станет главным узким местом. Стандартный набор: не рисовать обратную сторону сферы, кэшировать статичную геометрию в отдельный слой и перерисовывать только анимированное, ограничивать число одновременных анимаций юнитов.</p>
+    </div>
+  </section>
+
+  <!-- ============ 8 ============ -->
+  <section class="chapter">
+    <div class="rail">08<span class="tier">Риски</span></div>
+    <div class="body">
+      <h2 class="head">Что обязательно закрыть до запуска</h2>
+
+      <div class="flag">
+        <span class="label">Важное исправление в ваших документах</span>
+        <p>В <code>docs/tz</code> зафиксирована ссылка на «статью 16 закона О конкуренции». <strong>Этот закон отменён с 1 января 2016 года.</strong> Недобросовестная конкуренция теперь в Предпринимательском кодексе, глава 16: дискредитация — статья 181, некорректное сравнение — статья 191. Любой юридический документ с прежней ссылкой указывает на несуществующую норму.</p>
+        <p>По существу это в вашу пользу: статья 181 требует <em>заведомо ложных, недостоверных сведений</em>, а показ «кто сколько заплатил» не утверждает о бренде ничего ложного. Нормативное постановление Верховного суда №3 от 20 мая 2026 отдельно говорит, что оценочные суждения и риторика не проверяются на достоверность — то есть игровая лексика защитима. Но она защитима <em>только пока остаётся игровой</em>.</p>
+      </div>
+
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th>Риск</th><th>Почему сейчас</th><th>Что делать</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Имена персонажей</strong></td>
+              <td>Свободное переименование — это UGC. Открывает выдачу себя за чужой бренд и оскорбления, то есть ровно то, от чего вы уходили</td>
+              <td>В MVP только курируемые наборы косметики без свободной загрузки, блок-лист, запрет имён, совпадающих с брендами из каталога</td>
+            </tr>
+            <tr>
+              <td><strong>«Заплатил и потерял землю»</strong></td>
+              <td>Конечная земля плюс распад плюс реальные деньги — это гарантированные споры и обращения в банк</td>
+              <td>Правила возврата и правила распада, видимые <em>до</em> оплаты. Это надо написать до первого платежа, а не после первой жалобы</td>
+            </tr>
+            <tr>
+              <td><strong>Раскрытие платности</strong></td>
+              <td>Закон о защите прав потребителей требует, чтобы человек понимал: позиция — это оплаченное размещение, а не оценка качества</td>
+              <td>Заметная пометка у каждого рейтинга, на двух языках. Формулировка «лидер BrandWars по силе поддержки», а не «лучший бренд»</td>
+            </tr>
+            <tr>
+              <td><strong>Локализация данных</strong> <span class="pill risk">архитектура</span></td>
+              <td>Персональные данные граждан РК должны храниться в базе на территории Казахстана. Ближайший регион Vercel — Франкфурт</td>
+              <td>Разделить хранение: игровые данные где угодно, персональные — в базе в РК. Решать до роста, потом миграция дороже</td>
+            </tr>
+            <tr>
+              <td><strong>Прогнозы с призами</strong></td>
+              <td>Платный вход плюс денежный приз даёт оба признака азартной игры</td>
+              <td>Бесплатный вход, только косметические награды. В этом виде признаков нет: исход детерминирован, выплаты нет</td>
+            </tr>
+            <tr>
+              <td><strong>Смена формулы территории</strong></td>
+              <td>Бренды уже платили при долевой модели</td>
+              <td>Публичное правило конвертации и уведомление до перехода</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Отдельно: механика в целом — добровольный торг за позицию без утверждений о чужом качестве — по действующим нормам выглядит чистой, и риск квалификации как азартной игры я оцениваю как низкий (нет случайности, нет выплаты выигрыша). Но <strong>формулировки интерфейса</strong> — это то, где риск реально живёт. Остаётесь в спортивно-соревновательной лексике («перебил ставку», «вернул клетку») — вы в безопасной зоне; уходите в «проиграл», «слабак», «отстой» — возвращаете себе ровно ту статью, от которой ушли. Финальные тексты стоит показать местному юристу, это дешёвая страховка.</p>
+    </div>
+  </section>
+
+  <!-- ============ 9 ============ -->
+  <section class="chapter">
+    <div class="rail">09<span class="tier">Порядок</span></div>
+    <div class="body">
+      <h2 class="head">В каком порядке я бы это делал</h2>
+
+      <ol>
+        <li><strong>Решить долю против клеток</strong> и зафиксировать правило конвертации. Всё остальное зависит от этого.</li>
+        <li><strong>Три слоя земли с распадом.</strong> Это и повторяющаяся выручка, и защита от замерзания карты.</li>
+        <li><strong>Окно противостояния</strong> с публичным счётчиком. Главный источник хайпа и вторых платежей.</li>
+        <li><strong>Предпросмотр клетки до оплаты</strong> и подписи материков с уровнями детализации. Дешёвые правки, прямой рост конверсии.</li>
+        <li><strong>Инкрементальный пересчёт</strong> — до, а не после первого всплеска трафика.</li>
+        <li><strong>Правила: возвраты, распад, пометки платности.</strong> До первого платежа.</li>
+        <li><strong>Бейдж-виджет</strong> для сайтов брендов. Самый дешёвый цикл роста из списка.</li>
+        <li><strong>Города</strong> для второй области — только после того, как страна живая.</li>
+        <li><strong>Альянсы</strong> — когда есть база платящих брендов, которым есть с кем объединяться.</li>
+      </ol>
+
+      <div class="flag good">
+        <span class="label">Что уже сделано хорошо</span>
+        <p>Мастер-документ действительно сильный: разделение «карточка в каталоге ≠ подтверждённый владелец», каскад верификации, приоритет реального правообладателя, статусы споров — это ровно те места, где такие продукты обычно горят, и они у вас продуманы. Формула со сглаживанием через корень — правильная интуиция про то, что крупный бюджет не должен стирать мелких. Идея про 24 материка с понятными названиями тоже рабочая. Менять надо не фундамент, а слой экономики поверх него.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ closing ============ -->
+  <section class="chapter closing">
+    <div class="rail">—<span class="tier">Решения<br>за вами</span></div>
+    <div class="body">
+      <h2 class="head">Вопросы, на которые я не могу ответить за вас</h2>
+
+      <ol class="qlist">
+        <li><strong>Клетки или доля?</strong> Я рекомендую клетки, но это ломающее изменение для уже заплативших брендов, и цена миграции — ваша.</li>
+        <li><strong>Готовы ли вы на распад территории?</strong> Это главный механизм повторяющейся выручки и одновременно то, что часть брендов воспримет как «отбирают оплаченное». Без него продукт замерзает через квартал, с ним — нужны очень аккуратные формулировки.</li>
+        <li><strong>Отдельный мемный материк или чистая планета?</strong> Виральность против B2B-потолка. Я склоняюсь к изоляции юмора в одну зону.</li>
+        <li><strong>Казахстан вглубь или сразу другие страны?</strong> Города дают больше выручки с того же трафика; новые страны дают охват, но размывают плотность, а без плотности войн не будет.</li>
+        <li><strong>Сколько вы готовы вложить в realtime?</strong> Окна противостояния без живого счётчика работают вполовину, но это заметная инженерная работа.</li>
+      </ol>
+
+      <p class="footnote">Источники по жанру, праву РК, рынку и платежам — в <code>docs/research/</code>: 46 файлов с цитатами и оценкой достоверности. Цифры по Million Dollar Homepage, Pixelotto, Pixels4all и Outbid.lol — оттуда. Правовые ссылки на Предпринимательский кодекс и постановление Верховного суда получены с зеркал <code>kodeksy-kz.com</code> и <code>zakon.uchet.kz</code>, поскольку <code>adilet.zan.kz</code> отдавал ошибку сертификата — перед юридическим использованием сверьте с официальным реестром. Это продуктовый анализ, а не юридическое заключение.</p>
+    </div>
+  </section>
+
+</div>

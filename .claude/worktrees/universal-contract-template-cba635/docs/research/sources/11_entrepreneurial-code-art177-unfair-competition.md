@@ -1,0 +1,17 @@
+# 11 — Entrepreneurial Code of RK, Art. 177 — Concept of unfair competition
+- URL: https://kodeksy-kz.com/ka/predprinimatelskij_kodeks/177.htm (mirror of the Entrepreneurial Code of the Republic of Kazakhstan, No. 375-V ZRK, dated 29 October 2015, Chapter 16)
+- Accessed: 2026-08-27
+- Source type: primary
+- Credibility (1-5): 4 — reproduces the operative statutory text of the current codified law (verified article numbering and chapter structure against the code's own table of contents on the same mirror site). Not fetched directly from the official adilet.zan.kz registry because that domain returned a TLS certificate error ("unable to verify the first certificate") to the fetch tool on every attempt; kodeksy-kz.com is a private legal-reference database that republishes official code text with article-by-article commentary. A lawyer should cross-check the live adilet.zan.kz text before reliance, but nothing here suggests the mirror's substance is unreliable.
+- Recency: page marked current as of 2026 amendments; underlying code enacted 2015-10-29, this chapter last substantively amended by Law No. 101-VII (3 Jan 2022)
+- Bias notes: Commercial legal-reference site (likely ad- or subscription-supported); no evident slant on substantive legal content, but WebFetch's summarization (not a human) means paraphrase risk on anything not in quotes below.
+
+## Verbatim quotes
+> "Статья 177. Понятие недобросовестной конкуренции" [article title, confirmed via site's own table of contents fetch]
+
+Per the fetched summary, Part 1 defines unfair competition as actions by market subjects directed at gaining advantages that **contradict Kazakhstan's legislation, business customs, and principles of good faith**, causing or potentially causing harm to competitors or their reputation. Part 2 enumerates fifteen specific unfair-competition practices, including (among others): misuse of individualization means, misuse of another's product, copying product appearance, **discrediting market subjects**, false/misleading advertising, forced assortment sales, boycott calls, discrimination appeals, inducing contract breaches, employee bribery, trade-secret misuse, providing consumers false information, and **improper product comparisons**.
+
+Note: this summary is the fetch tool's paraphrase of Part 1/2, not a verbatim quote of the full article text — the article title and the chapter/article numbering are independently confirmed (see source 12/13), but the operative definition wording itself should be treated as reliable paraphrase, not exact statutory language, until confirmed against adilet.zan.kz directly.
+
+## Relevance
+This is the umbrella definition article for Kazakhstan's current (post-2016) unfair-competition regime — it establishes the general test (advantage-seeking conduct that contradicts law/good-faith custom AND causes/risks harm to a competitor) that both discreditation (Art. 181) and incorrect comparison (Art. 191) are specific instances of. Confirms the operative law today is the **Entrepreneurial Code (2015, No. 375-V)**, not the standalone 2008 Law "On Competition" (No. 112-IV) that the research brief referenced — that 2008 law was repealed effective 1 January 2016 when the Entrepreneurial Code took effect (see source 12 for the repeal citation). Any ТЗ or legal memo should cite Entrepreneurial Code Art. 177/181/191, not "Law on Competition Art. 16" — the latter no longer exists in force.

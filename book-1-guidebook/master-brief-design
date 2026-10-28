@@ -1,0 +1,105 @@
+# DESIGN.md — NeuroTeams Design System & Anti-Slop Brief
+
+ROLE
+You are a senior product designer & frontend architect.
+Your job is to enforce THIS design system and avoid AI-slop patterns when generating or refactoring UI.
+
+PROJECT CONTEXT
+- Product: NeuroTeams — AI learning platform for business (leaders, founders, teams).
+- Audience: entrepreneurs / managers in Kazakhstan & CIS; desktop-first, mobile required.
+- Brand tone: calm + confident + professional. NO kids gamification. NO “template SaaS demo” vibes.
+- Domain: neuroteams.kz · app under `/platform/*` · funnels `/aistart`, kids promo out of this brief’s priority.
+
+AESTHETIC DIRECTION
+- Direction: Clean B2B product (serious learning OS).
+- One aesthetic only — do not mix playful OriginKit neon with Swiss editorial on the same page.
+
+PALETTE (MAX 3 BRAND HUES)
+- Ink / navy: #0F172A (≈40% — text, dark bands, chrome)
+- Primary: #2563EB (≈50% — CTA, links, active)
+- Accent: #0D9488 (≈10% — teal highlight; NOT purple/violet)
+- Semantic (separate, not brand):
+  - Success: #059669
+  - Warning: #D97706
+  - Error: #DC2626
+  - Info: #0284C7
+- Surfaces:
+  - --color-bg: #F8FAFC
+  - --color-surface: #FFFFFF
+  - --color-surface-soft: #F1F5F9
+  - --color-text: #0F172A
+  - --color-text-muted: #64748B
+  - --color-border: rgba(15, 23, 42, 0.08)
+Rules:
+- No indigo→violet / purple mesh gradients (hard block).
+- No glow-primary / glow-secondary purple haze.
+- Flat, confident backgrounds; gradient only for intentional dark navy band (ink → #1E293B), never rainbow.
+- All colors in CSS custom properties with semantic names.
+
+TYPOGRAPHY
+- Display (headlines / brand): Sora (600–700).
+- Body / UI: Manrope (400 / 600 / 700).
+- Mono (labels, “NT”, code): JetBrains Mono (500) — sparingly.
+- Avoid Inter/Roboto/Geist as the only face “because default”.
+- Body ≥ 16px. Scale ~1.25: 16 → 20 → 25 → 31 → 39.
+- Max 3 weights in UI: Regular, SemiBold/Bold, ExtraBold only on display.
+
+SPACING & LAYOUT
+- 8-pt grid (4 as half-step). No 13px / 11px / 19px.
+- Section padding varies: hero > content > footer.
+- Layout primitives:
+  - Marketing hero: brand-first; copy + full-bleed product/visual plane on desktop. No floating stickers on media.
+  - Program / modules: numbered process list or track — not 3–4 identical icon cards.
+  - Pricing: clear plan row + CTA sentence (verb + object + price when known).
+
+SURFACES & CARDS
+Anti-slop:
+- Default surfaces borderless.
+- Separation order: (1) whitespace (2) soft bg shift (3) soft elevation (4) border last.
+- No gray border + shadow on every card.
+- No decorative colored left strips.
+- No neon border overlays / shiny pills as default decoration.
+
+MOTION & STATES
+- 150–250ms micro; ≤500ms section.
+- No magnetic bounce, emoji burst, floating glyph rain.
+- States required: hover, focus-visible, active, disabled, loading, empty, error.
+- Focus ring: 0 0 0 3px rgba(37, 99, 235, 0.35).
+
+ACCESSIBILITY
+- APCA targets: body Lc ≥ 75; large/bold ≥ 45; icons/borders ≥ 30.
+- Text on dark / imagery needs overlay.
+
+CONTENT & COPY
+- No “Supercharge”, “Next-gen”, “AI for everyone”, “Try for free” without outcome.
+- Product-grounded:
+  - What: practical AI for business → artifacts / MVP.
+  - Who: leaders & teams.
+  - Outcome: shipable work, not theory.
+- CTA = full sentence with verb + object + price/outcome
+  (e.g. «Записаться на поток AI Start за 3 990 ₸» / «Открыть карту модулей»).
+- Tone: «вы», business-register; no kids slang / emoji section labels.
+
+AI-SLOP PATTERNS TO AVOID (HARD BLOCK)
+- Purple/indigo gradient CTAs and mesh backgrounds.
+- Inter-only stack without a display pairing from this brief.
+- FloatingIcons / EmojiBurst / MagneticHover / NeonBorder / ShinyPill as default hero chrome.
+- Three identical “why us” cards with vague icons.
+- Floating pill nav + generic badge chip + centered H1 as the whole hero thesis.
+- Dark mode as default without justification (dark bands OK; full dark app by default — no).
+
+CHECKLIST BEFORE SHIPPING
+- One aesthetic; ≤3 brand hues + semantic.
+- Sora + Manrope; body ≥16px.
+- Surfaces by space/bg/elevation, not gray borders everywhere.
+- 8-pt grid; varied section rhythm.
+- APCA passes; focus rings present.
+- CTAs are outcome sentences.
+
+SCOPE (priority)
+1. Marketing home: `src/widgets/landing/LandingPage.tsx` + `globals.css` tokens
+2. Student map + chrome: `ModuleMapClient.tsx`, platform header / SideNavBar
+3. `/aistart` funnel: polish only if asked (keep conversion logic)
+
+REFERENCE PREVIEW
+- Before/after master: `book-1-guidebook/neuroteams-design-master.html`

@@ -1,0 +1,90 @@
+{
+  "categories": {
+    "travel": [
+      "leader-idle.png",
+      "citizen-1-idle.png",
+      "citizen-2-idle.png",
+      "prop-1.png",
+      "prop-2.png",
+      "prop-3.png",
+      "prop-4.png",
+      "prop-5.png",
+      "building-1.png",
+      "building-2.png",
+      "effect-sparkle.png"
+    ],
+    "beauty": [
+      "leader-idle.png",
+      "citizen-1-idle.png",
+      "citizen-2-idle.png",
+      "prop-1.png",
+      "prop-2.png",
+      "prop-3.png",
+      "prop-4.png",
+      "prop-5.png",
+      "building-1.png",
+      "building-2.png",
+      "effect-sparkle.png"
+    ],
+    "code": [
+      "leader-idle.png",
+      "citizen-1-idle.png",
+      "citizen-2-idle.png",
+      "prop-1.png",
+      "prop-2.png",
+      "prop-3.png",
+      "prop-4.png",
+      "prop-5.png",
+      "building-1.png",
+      "building-2.png",
+      "effect-sparkle.png"
+    ],
+    "ai-agents": [
+      "leader-idle.png",
+      "citizen-1-idle.png",
+      "citizen-2-idle.png",
+      "prop-1.png",
+      "prop-2.png",
+      "prop-3.png",
+      "prop-4.png",
+      "prop-5.png",
+      "building-1.png",
+      "building-2.png",
+      "effect-sparkle.png"
+    ],
+    "games": [
+      "leader-idle.png",
+      "citizen-1-idle.png",
+      "citizen-2-idle.png",
+      "prop-1.png",
+      "prop-2.png",
+      "prop-3.png",
+      "prop-4.png",
+      "prop-5.png",
+      "building-1.png",
+      "building-2.png",
+      "effect-sparkle.png"
+    ],
+    "marketing": [
+      "leader-idle.png",
+      "citizen-1-idle.png",
+      "citizen-2-idle.png",
+      "prop-1.png",
+      "prop-2.png",
+      "prop-3.png",
+      "prop-4.png",
+      "prop-5.png",
+      "building-1.png",
+      "building-2.png",
+      "effect-sparkle.png"
+    ]
+  },
+  "characters": [
+    "founder",
+    "marketer",
+    "builder",
+    "courier",
+    "supporter",
+    "mascot"
+  ]
+}

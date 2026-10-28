@@ -1,0 +1,33 @@
+id,filename,url,type,credibility,recency,hypothesis,adversarial,takeaway
+01,01_spamzilla-features-pricing.md,quirk.biz (SpamZilla review),industry,3,2026,H1,no,SpamZilla already auto-scores spam but reviewer calls it "a signal, not a substitute for manual review"
+02,02_expireddomains-net-aggregator.md,expireddomains.net,primary,5,2026,H1,no,Free aggregator with zero content-category (casino/adult/pharma) filtering
+03,03_domcop-pricing-features.md,domcop.com/pricing,primary,5,2026,H2,no,"$68-118/mo, 90+ metrics, no spam/blacklist feature at all"
+04,04_domain-hunter-gatherer.md,domainhuntergatherer.com,primary,5,2026,H1;H4,no,Vendor's own copy admits "metrics point you at candidates, they do not make the decision"
+05,05_other-tools-landscape.md,domcop.com/blog,industry,3,2026,H1,no,Rounds out landscape; none add content-category red-flag detection
+06,06_upwork-freelance-demand-evidence.md,upwork.com (job postings),primary,3,2026,H1,no,"Live 2026 postings incl. a $50k PBN role; confirms buyers still pay humans"
+07,07_fiverr-freelance-demand-evidence.md,fiverr.com (gigs),primary,3,2026,H1,no,Gig sells "running SpamZilla for you" for $10 - proof of a trust/verification gap
+08,08_ahrefs-majestic-batch-check.md,ahrefs.com + majestic.com,primary,5,2026,H2,no,Both already offer native bulk domain-metric checking - not a differentiator
+09,09_ahrefs-api-pricing.md,saasraptor.com,industry,3,2026,H2,no,Ahrefs API pricing is opaque/inconsistent across sources ($129 to ~$1499/mo)
+10,10_majestic-pricing-official.md,majestic.com/plans-pricing,primary,5,2026,H2,no,Majestic API tier = $399.99/mo fixed minimum; no pay-as-you-go entry
+11,11_whoisxmlapi-pricing.md,whois-history.whoisxmlapi.com,industry,3,2026,H2,no,Current WHOIS is cheap (~$0.015/query); WHOIS History priced in undisclosed credit currency
+12,12_wayback-cdx-rate-limits.md,archivarix.com,industry,3,2026,H2,no,Wayback/CDX API is free; 60 req/min is trivial at hundreds-of-domains/month scale
+13,13_wayback-coverage-gaps-domain-vetting.md,seo.domains,industry,4,2025-2026,H4,no,"""A gap is silence, not innocence"" - sparse Wayback coverage for low-traffic aged domains"
+14,14_dataforseo-backlinks-pricing.md,dataforseo.com/pricing,primary,5,2026,H2,no,"~$0.06 per 1,000 backlink rows - strongest evidence AGAINST H2's pessimism"
+15,15_common-crawl-backlink-index-difficulty.md,groups.google.com/g/common-crawl,discussion,4,undated,H2,no,"Common Crawl staff: DIY backlink index is ""expensive to create...not cheap to query"""
+16,16_ahrefs-infrastructure-cost.md,tech.ahrefs.com,primary,5,2020s (recirculated 2026),H2,no,~850 servers / ~$400M infra cost - owning a competing index is infeasible for a solo builder
+17,17_google-search-central-spam-policies.md,developers.google.com/search/docs/essentials/spam-policies,primary,5,2026,H3,no,Google's own rule text bans link schemes incl. expired-domain abuse; ranking penalty is explicit
+18,18_google-search-status-spam-updates-history.md,status.search.google.com,primary,5,2022-2026,H3,no,Confirmed spam-update log shows continuous enforcement 2022 through Aug 2026
+19,19_searchengineland-pbn-detection-penalties.md,searchengineland.com,industry,4,evergreen,H3,no,"Independent confirmation Penguin/core algo detects PBN patterns; cites J.C. Penney 2011"
+20,20_nichepursuits-pbn-penalty-case-study.md,nichepursuits.com,discussion,4,2014 case,H3,no,"First-hand account: 80-90% traffic loss / ~$5k/mo across PBN sites in Google's 2014 sweep"
+21,21_domraider-legality-of-expired-domains.md,domraider.com,industry,3,undated,H3,no,Buying/reselling expired domains is legal; risk is platform ToS not criminal law
+22,22_legiit-pbn-footprints-detection-methods.md,legiit.com/blog/pbn-footprints,industry,3,undated,H3;H4,no,"Detection footprints (shared IP/WHOIS/template/analytics ID) span beyond single-domain scoring"
+23,23_stellarseo-pbn-links-2026-commentary.md,stellarseo.com/pbn-links,industry,3,2026,H3,no,"2026 view: PBN links increasingly just silently ignored rather than penalized - ""money lost quietly"""
+24,24_searchengineland-august-2025-spam-update.md,searchengineland.com,industry,4,2025,H3,no,"Aug 2025 update ran 27 days via ""SpamBrain"" AI - confirms continuous enforcement cadence"
+25,25_sterlingsky-august-2025-spam-update-case-study.md,sterlingsky.ca,industry,4,2025,H3,yes,"Aug 2025 update retroactively devalued PBN links up to 5 years old - unpriced tail risk even for ""vetted"" domains"
+26,26_reporteroutreach-state-of-link-building-2026-survey.md,reporteroutreach.com,industry,3,Q1 2026,H1;H3,yes,"Survey of 500 SEO pros: digital PR/HARO/guest posts dominate ""best results""; PBN absent as a top category (vendor has competing interest)"
+27,27_xamsor-domain-authority-manipulation-experiment.md,xamsor.com,industry,4,current,H2;H4,yes,"Paid experiment: bought DR 44-59 for $15-85 - the exact metrics buyers trust are cheaply gameable"
+28,28_nerdbot-is-pbn-dead-2026.md,nerdbot.com,industry,2,2026-02,H3,yes,"Even a pro-PBN advertorial concedes ""cheap, spammy"" PBNs are dead - only expensive disciplined networks survive"
+29,29_hustlelife-spamzilla-review.md,hustlelife.net,industry,3,2026,H1,yes,"SpamZilla reviewer: automated scores ""could still be spammed"" - trust gap is real but inherited by any similar tool"
+30,30_techcrunch-seo-scammers-expired-domains.md,techcrunch.com,primary,5,2022 (foundational),H3,yes,"On-record Google Search Liaison gives hedged non-answer; practitioner claims Google ""never grows wise"" - complicates a clean ""detection is winning"" narrative"
+31,31_trustpilot-ageddoms-reviews.md,ca.trustpilot.com,discussion,2,undated,H1,no,Weak/small-sample demand-confirming signal for curated aged-domain sales
+32,32_upwork-pbn-expired-domain-job-postings.md,upwork.com,primary,3,2026,H1;H4,yes,"Multiple live postings confirm recurring demand, but no PBN-specific listings exist on Glassdoor/Indeed/ZipRecruiter - the labor market is small/informal"
